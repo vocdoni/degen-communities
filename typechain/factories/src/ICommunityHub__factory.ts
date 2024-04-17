@@ -13,6 +13,53 @@ const _abi = [
     inputs: [
       {
         internalType: "uint256",
+        name: "expected",
+        type: "uint256",
+      },
+      {
+        internalType: "uint256",
+        name: "actual",
+        type: "uint256",
+      },
+    ],
+    name: "AmountMismatch",
+    type: "error",
+  },
+  {
+    inputs: [
+      {
+        internalType: "uint256",
+        name: "guardian",
+        type: "uint256",
+      },
+    ],
+    name: "GuardianNotFound",
+    type: "error",
+  },
+  {
+    inputs: [],
+    name: "ZeroAmount",
+    type: "error",
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: false,
+        internalType: "uint256",
+        name: "communityId",
+        type: "uint256",
+      },
+    ],
+    name: "AdminCommunityManaged",
+    type: "event",
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: false,
+        internalType: "uint256",
         name: "communityId",
         type: "uint256",
       },
@@ -41,27 +88,226 @@ const _abi = [
             type: "tuple[]",
           },
         ],
+        indexed: false,
         internalType: "struct ICommunityHub.Census",
         name: "census",
         type: "tuple",
       },
     ],
-    name: "AddCensus",
-    outputs: [],
-    stateMutability: "nonpayable",
-    type: "function",
+    name: "CensusSet",
+    type: "event",
   },
   {
+    anonymous: false,
     inputs: [
       {
+        indexed: false,
         internalType: "uint256",
         name: "communityId",
         type: "uint256",
       },
       {
+        indexed: false,
         internalType: "address",
-        name: "guardian",
+        name: "creator",
         type: "address",
+      },
+    ],
+    name: "CommunityCreated",
+    type: "event",
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: false,
+        internalType: "uint256",
+        name: "price",
+        type: "uint256",
+      },
+    ],
+    name: "CreateCommunityPriceSet",
+    type: "event",
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: false,
+        internalType: "uint256",
+        name: "communityId",
+        type: "uint256",
+      },
+      {
+        indexed: false,
+        internalType: "enum ICommunityHub.CreateElectionPermission",
+        name: "createElectionPermission",
+        type: "uint8",
+      },
+    ],
+    name: "CreateElectionPermissionSet",
+    type: "event",
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: false,
+        internalType: "address",
+        name: "electionResultsContract",
+        type: "address",
+      },
+    ],
+    name: "DefaultElectionResultsContractSet",
+    type: "event",
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: false,
+        internalType: "address",
+        name: "sender",
+        type: "address",
+      },
+      {
+        indexed: false,
+        internalType: "uint256",
+        name: "amount",
+        type: "uint256",
+      },
+    ],
+    name: "Deposit",
+    type: "event",
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: false,
+        internalType: "uint256",
+        name: "communityId",
+        type: "uint256",
+      },
+      {
+        indexed: false,
+        internalType: "address",
+        name: "electionResultsContract",
+        type: "address",
+      },
+    ],
+    name: "ElectionResultsContractSet",
+    type: "event",
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: false,
+        internalType: "uint256",
+        name: "communityId",
+        type: "uint256",
+      },
+      {
+        indexed: false,
+        internalType: "uint256",
+        name: "guardian",
+        type: "uint256",
+      },
+    ],
+    name: "GuardianAdded",
+    type: "event",
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: false,
+        internalType: "uint256",
+        name: "communityId",
+        type: "uint256",
+      },
+      {
+        indexed: false,
+        internalType: "uint256",
+        name: "guardian",
+        type: "uint256",
+      },
+    ],
+    name: "GuardianRemoved",
+    type: "event",
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: false,
+        internalType: "uint256",
+        name: "communityId",
+        type: "uint256",
+      },
+      {
+        components: [
+          {
+            internalType: "string",
+            name: "name",
+            type: "string",
+          },
+          {
+            internalType: "string",
+            name: "imageURI",
+            type: "string",
+          },
+          {
+            internalType: "string[]",
+            name: "channels",
+            type: "string[]",
+          },
+          {
+            internalType: "bool",
+            name: "notifications",
+            type: "bool",
+          },
+        ],
+        indexed: false,
+        internalType: "struct ICommunityHub.CommunityMetadata",
+        name: "metadata",
+        type: "tuple",
+      },
+    ],
+    name: "MetadataSet",
+    type: "event",
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: false,
+        internalType: "uint256",
+        name: "communityId",
+        type: "uint256",
+      },
+      {
+        indexed: false,
+        internalType: "bool",
+        name: "notifiableElections",
+        type: "bool",
+      },
+    ],
+    name: "NotifiableElectionsSet",
+    type: "event",
+  },
+  {
+    inputs: [
+      {
+        internalType: "uint256",
+        name: "_communityId",
+        type: "uint256",
+      },
+      {
+        internalType: "uint256",
+        name: "_guardian",
+        type: "uint256",
       },
     ],
     name: "AddGuardian",
@@ -73,7 +319,7 @@ const _abi = [
     inputs: [
       {
         internalType: "uint256",
-        name: "communityId",
+        name: "_communityId",
         type: "uint256",
       },
       {
@@ -100,7 +346,7 @@ const _abi = [
           },
         ],
         internalType: "struct ICommunityHub.CommunityMetadata",
-        name: "metadata",
+        name: "_metadata",
         type: "tuple",
       },
       {
@@ -129,26 +375,57 @@ const _abi = [
           },
         ],
         internalType: "struct ICommunityHub.Census",
-        name: "census",
+        name: "_census",
         type: "tuple",
       },
       {
         internalType: "uint256[]",
-        name: "guardians",
+        name: "_guardians",
         type: "uint256[]",
       },
       {
         internalType: "address",
-        name: "electionResultsContract",
+        name: "_electionResultsContract",
         type: "address",
       },
       {
         internalType: "enum ICommunityHub.CreateElectionPermission",
-        name: "createElectionPermission",
+        name: "_createElectionPermission",
         type: "uint8",
+      },
+      {
+        internalType: "bool",
+        name: "_disabled",
+        type: "bool",
       },
     ],
     name: "AdminManageCommunity",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "uint256",
+        name: "_price",
+        type: "uint256",
+      },
+    ],
+    name: "AdminSetCommunityPrice",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "address",
+        name: "_electionResultsContract",
+        type: "address",
+      },
+    ],
+    name: "AdminSetDefaultElectionResultsContract",
     outputs: [],
     stateMutability: "nonpayable",
     type: "function",
@@ -179,7 +456,7 @@ const _abi = [
           },
         ],
         internalType: "struct ICommunityHub.CommunityMetadata",
-        name: "metadata",
+        name: "_metadata",
         type: "tuple",
       },
       {
@@ -208,22 +485,22 @@ const _abi = [
           },
         ],
         internalType: "struct ICommunityHub.Census",
-        name: "census",
+        name: "_census",
         type: "tuple",
       },
       {
         internalType: "uint256[]",
-        name: "guardians",
+        name: "_guardians",
         type: "uint256[]",
       },
       {
         internalType: "address",
-        name: "electionResultsContract",
+        name: "_electionResultsContract",
         type: "address",
       },
       {
         internalType: "enum ICommunityHub.CreateElectionPermission",
-        name: "createElectionPermission",
+        name: "_createElectionPermission",
         type: "uint8",
       },
     ],
@@ -235,110 +512,20 @@ const _abi = [
         type: "uint256",
       },
     ],
-    stateMutability: "nonpayable",
+    stateMutability: "payable",
     type: "function",
   },
   {
     inputs: [
       {
         internalType: "uint256",
-        name: "communityId",
+        name: "_communityId",
         type: "uint256",
-      },
-    ],
-    name: "DeleteCommunity",
-    outputs: [],
-    stateMutability: "nonpayable",
-    type: "function",
-  },
-  {
-    inputs: [
-      {
-        internalType: "uint256",
-        name: "communityId",
-        type: "uint256",
-      },
-      {
-        internalType: "string",
-        name: "electionId",
-        type: "string",
-      },
-    ],
-    name: "GetElectionResults",
-    outputs: [
-      {
-        internalType: "string",
-        name: "question",
-        type: "string",
-      },
-      {
-        internalType: "string[]",
-        name: "options",
-        type: "string[]",
-      },
-      {
-        internalType: "string",
-        name: "date",
-        type: "string",
-      },
-      {
-        internalType: "uint256[][]",
-        name: "tally",
-        type: "uint256[][]",
       },
       {
         internalType: "uint256",
-        name: "turnout",
+        name: "_guardian",
         type: "uint256",
-      },
-      {
-        internalType: "string[]",
-        name: "participants",
-        type: "string[]",
-      },
-      {
-        internalType: "bytes",
-        name: "action",
-        type: "bytes",
-      },
-      {
-        internalType: "bytes32",
-        name: "censusRoot",
-        type: "bytes32",
-      },
-      {
-        internalType: "string",
-        name: "censusURI",
-        type: "string",
-      },
-    ],
-    stateMutability: "view",
-    type: "function",
-  },
-  {
-    inputs: [
-      {
-        internalType: "uint256",
-        name: "communityId",
-        type: "uint256",
-      },
-    ],
-    name: "RemoveCensus",
-    outputs: [],
-    stateMutability: "nonpayable",
-    type: "function",
-  },
-  {
-    inputs: [
-      {
-        internalType: "uint256",
-        name: "communityId",
-        type: "uint256",
-      },
-      {
-        internalType: "address",
-        name: "guardian",
-        type: "address",
       },
     ],
     name: "RemoveGuardian",
@@ -350,12 +537,54 @@ const _abi = [
     inputs: [
       {
         internalType: "uint256",
-        name: "communityId",
+        name: "_communityId",
+        type: "uint256",
+      },
+      {
+        components: [
+          {
+            internalType: "enum ICommunityHub.CensusType",
+            name: "censusType",
+            type: "uint8",
+          },
+          {
+            components: [
+              {
+                internalType: "string",
+                name: "blockchain",
+                type: "string",
+              },
+              {
+                internalType: "address",
+                name: "contractAddress",
+                type: "address",
+              },
+            ],
+            internalType: "struct ICommunityHub.Token[]",
+            name: "tokens",
+            type: "tuple[]",
+          },
+        ],
+        internalType: "struct ICommunityHub.Census",
+        name: "_census",
+        type: "tuple",
+      },
+    ],
+    name: "SetCensus",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "uint256",
+        name: "_communityId",
         type: "uint256",
       },
       {
         internalType: "enum ICommunityHub.CreateElectionPermission",
-        name: "createElectionPermission",
+        name: "_createElectionPermission",
         type: "uint8",
       },
     ],
@@ -368,75 +597,12 @@ const _abi = [
     inputs: [
       {
         internalType: "uint256",
-        name: "communityId",
-        type: "uint256",
-      },
-      {
-        internalType: "bytes32",
-        name: "electionId",
-        type: "bytes32",
-      },
-      {
-        internalType: "string",
-        name: "question",
-        type: "string",
-      },
-      {
-        internalType: "string[]",
-        name: "options",
-        type: "string[]",
-      },
-      {
-        internalType: "string",
-        name: "date",
-        type: "string",
-      },
-      {
-        internalType: "uint256[][]",
-        name: "tally",
-        type: "uint256[][]",
-      },
-      {
-        internalType: "uint256",
-        name: "turnout",
-        type: "uint256",
-      },
-      {
-        internalType: "string[]",
-        name: "participants",
-        type: "string[]",
-      },
-      {
-        internalType: "bytes",
-        name: "action",
-        type: "bytes",
-      },
-      {
-        internalType: "bytes32",
-        name: "censusRoot",
-        type: "bytes32",
-      },
-      {
-        internalType: "string",
-        name: "censusURI",
-        type: "string",
-      },
-    ],
-    name: "SetElectionResults",
-    outputs: [],
-    stateMutability: "nonpayable",
-    type: "function",
-  },
-  {
-    inputs: [
-      {
-        internalType: "uint256",
-        name: "communityId",
+        name: "_communityId",
         type: "uint256",
       },
       {
         internalType: "address",
-        name: "electionResultsContract",
+        name: "_electionResultsContract",
         type: "address",
       },
     ],
@@ -449,7 +615,7 @@ const _abi = [
     inputs: [
       {
         internalType: "uint256",
-        name: "communityId",
+        name: "_communityId",
         type: "uint256",
       },
       {
@@ -476,7 +642,7 @@ const _abi = [
           },
         ],
         internalType: "struct ICommunityHub.CommunityMetadata",
-        name: "metadata",
+        name: "_metadata",
         type: "tuple",
       },
     ],
@@ -489,12 +655,12 @@ const _abi = [
     inputs: [
       {
         internalType: "uint256",
-        name: "communityId",
+        name: "_communityId",
         type: "uint256",
       },
       {
         internalType: "bool",
-        name: "notifiableElections",
+        name: "_notifiableElections",
         type: "bool",
       },
     ],
