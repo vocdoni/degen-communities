@@ -14,3 +14,5 @@ export type { ElectionResults } from "./src/ElectionResults";
 export { ElectionResults__factory } from "./factories/src/ElectionResults__factory";
 export type { ICommunityHub } from "./src/ICommunityHub";
 export { ICommunityHub__factory } from "./factories/src/ICommunityHub__factory";
+export type { IElectionResults } from "./src/IElectionResults";
+export { IElectionResults__factory } from "./factories/src/IElectionResults__factory";

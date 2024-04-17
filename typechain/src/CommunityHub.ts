@@ -62,6 +62,67 @@ export declare namespace ICommunityHub {
     channels: string[];
     notifications: boolean;
   };
+
+  export type CommunityStruct = {
+    metadata: ICommunityHub.CommunityMetadataStruct;
+    census: ICommunityHub.CensusStruct;
+    guardians: BigNumberish[];
+    electionResultsContract: AddressLike;
+    createElectionPermission: BigNumberish;
+    disabled: boolean;
+  };
+
+  export type CommunityStructOutput = [
+    metadata: ICommunityHub.CommunityMetadataStructOutput,
+    census: ICommunityHub.CensusStructOutput,
+    guardians: bigint[],
+    electionResultsContract: string,
+    createElectionPermission: bigint,
+    disabled: boolean
+  ] & {
+    metadata: ICommunityHub.CommunityMetadataStructOutput;
+    census: ICommunityHub.CensusStructOutput;
+    guardians: bigint[];
+    electionResultsContract: string;
+    createElectionPermission: bigint;
+    disabled: boolean;
+  };
+}
+
+export declare namespace IElectionResults {
+  export type ResultStruct = {
+    question: string;
+    options: string[];
+    date: string;
+    tally: BigNumberish[][];
+    turnout: BigNumberish;
+    totalVotingPower: BigNumberish;
+    participants: BigNumberish[];
+    censusRoot: BytesLike;
+    censusURI: string;
+  };
+
+  export type ResultStructOutput = [
+    question: string,
+    options: string[],
+    date: string,
+    tally: bigint[][],
+    turnout: bigint,
+    totalVotingPower: bigint,
+    participants: bigint[],
+    censusRoot: string,
+    censusURI: string
+  ] & {
+    question: string;
+    options: string[];
+    date: string;
+    tally: bigint[][];
+    turnout: bigint;
+    totalVotingPower: bigint;
+    participants: bigint[];
+    censusRoot: string;
+    censusURI: string;
+  };
 }
 
 export interface CommunityHubInterface extends Interface {
@@ -72,14 +133,20 @@ export interface CommunityHubInterface extends Interface {
       | "AdminSetCommunityPrice"
       | "AdminSetDefaultElectionResultsContract"
       | "CreateCommunity"
+      | "GetCommunity"
+      | "GetCreateCommunityPrice"
+      | "GetDefaultElectionResultsContract"
+      | "GetNextCommunityId"
       | "RemoveGuardian"
       | "SetCensus"
       | "SetCreateElectionPermission"
       | "SetElectionResultsContract"
       | "SetMetadata"
       | "SetNotifiableElections"
+      | "getResult"
       | "owner"
       | "renounceOwnership"
+      | "setResult"
       | "transferOwnership"
   ): FunctionFragment;
 
@@ -98,6 +165,7 @@ export interface CommunityHubInterface extends Interface {
       | "MetadataSet"
       | "NotifiableElectionsSet"
       | "OwnershipTransferred"
+      | "ResultsSet"
   ): EventFragment;
 
   encodeFunctionData(
@@ -135,6 +203,22 @@ export interface CommunityHubInterface extends Interface {
     ]
   ): string;
   encodeFunctionData(
+    functionFragment: "GetCommunity",
+    values: [BigNumberish]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "GetCreateCommunityPrice",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "GetDefaultElectionResultsContract",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "GetNextCommunityId",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
     functionFragment: "RemoveGuardian",
     values: [BigNumberish, BigNumberish]
   ): string;
@@ -158,10 +242,18 @@ export interface CommunityHubInterface extends Interface {
     functionFragment: "SetNotifiableElections",
     values: [BigNumberish, boolean]
   ): string;
+  encodeFunctionData(
+    functionFragment: "getResult",
+    values: [BigNumberish, BytesLike]
+  ): string;
   encodeFunctionData(functionFragment: "owner", values?: undefined): string;
   encodeFunctionData(
     functionFragment: "renounceOwnership",
     values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "setResult",
+    values: [BigNumberish, BytesLike, IElectionResults.ResultStruct]
   ): string;
   encodeFunctionData(
     functionFragment: "transferOwnership",
@@ -189,6 +281,22 @@ export interface CommunityHubInterface extends Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(
+    functionFragment: "GetCommunity",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "GetCreateCommunityPrice",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "GetDefaultElectionResultsContract",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "GetNextCommunityId",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
     functionFragment: "RemoveGuardian",
     data: BytesLike
   ): Result;
@@ -209,11 +317,13 @@ export interface CommunityHubInterface extends Interface {
     functionFragment: "SetNotifiableElections",
     data: BytesLike
   ): Result;
+  decodeFunctionResult(functionFragment: "getResult", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "owner", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "renounceOwnership",
     data: BytesLike
   ): Result;
+  decodeFunctionResult(functionFragment: "setResult", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "transferOwnership",
     data: BytesLike
@@ -413,6 +523,19 @@ export namespace OwnershipTransferredEvent {
   export type LogDescription = TypedLogDescription<Event>;
 }
 
+export namespace ResultsSetEvent {
+  export type InputTuple = [communityId: BigNumberish, electionId: BytesLike];
+  export type OutputTuple = [communityId: bigint, electionId: string];
+  export interface OutputObject {
+    communityId: bigint;
+    electionId: string;
+  }
+  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
+  export type Filter = TypedDeferredTopicFilter<Event>;
+  export type Log = TypedEventLog<Event>;
+  export type LogDescription = TypedLogDescription<Event>;
+}
+
 export interface CommunityHub extends BaseContract {
   connect(runner?: ContractRunner | null): CommunityHub;
   waitForDeployment(): Promise<this>;
@@ -500,6 +623,18 @@ export interface CommunityHub extends BaseContract {
     "payable"
   >;
 
+  GetCommunity: TypedContractMethod<
+    [_communityId: BigNumberish],
+    [ICommunityHub.CommunityStructOutput],
+    "view"
+  >;
+
+  GetCreateCommunityPrice: TypedContractMethod<[], [bigint], "view">;
+
+  GetDefaultElectionResultsContract: TypedContractMethod<[], [string], "view">;
+
+  GetNextCommunityId: TypedContractMethod<[], [bigint], "view">;
+
   RemoveGuardian: TypedContractMethod<
     [_communityId: BigNumberish, _guardian: BigNumberish],
     [void],
@@ -539,9 +674,25 @@ export interface CommunityHub extends BaseContract {
     "nonpayable"
   >;
 
+  getResult: TypedContractMethod<
+    [_communityId: BigNumberish, _electionId: BytesLike],
+    [IElectionResults.ResultStructOutput],
+    "view"
+  >;
+
   owner: TypedContractMethod<[], [string], "view">;
 
   renounceOwnership: TypedContractMethod<[], [void], "nonpayable">;
+
+  setResult: TypedContractMethod<
+    [
+      _communityId: BigNumberish,
+      _electionId: BytesLike,
+      _result: IElectionResults.ResultStruct
+    ],
+    [void],
+    "nonpayable"
+  >;
 
   transferOwnership: TypedContractMethod<
     [newOwner: AddressLike],
@@ -599,6 +750,22 @@ export interface CommunityHub extends BaseContract {
     "payable"
   >;
   getFunction(
+    nameOrSignature: "GetCommunity"
+  ): TypedContractMethod<
+    [_communityId: BigNumberish],
+    [ICommunityHub.CommunityStructOutput],
+    "view"
+  >;
+  getFunction(
+    nameOrSignature: "GetCreateCommunityPrice"
+  ): TypedContractMethod<[], [bigint], "view">;
+  getFunction(
+    nameOrSignature: "GetDefaultElectionResultsContract"
+  ): TypedContractMethod<[], [string], "view">;
+  getFunction(
+    nameOrSignature: "GetNextCommunityId"
+  ): TypedContractMethod<[], [bigint], "view">;
+  getFunction(
     nameOrSignature: "RemoveGuardian"
   ): TypedContractMethod<
     [_communityId: BigNumberish, _guardian: BigNumberish],
@@ -644,11 +811,29 @@ export interface CommunityHub extends BaseContract {
     "nonpayable"
   >;
   getFunction(
+    nameOrSignature: "getResult"
+  ): TypedContractMethod<
+    [_communityId: BigNumberish, _electionId: BytesLike],
+    [IElectionResults.ResultStructOutput],
+    "view"
+  >;
+  getFunction(
     nameOrSignature: "owner"
   ): TypedContractMethod<[], [string], "view">;
   getFunction(
     nameOrSignature: "renounceOwnership"
   ): TypedContractMethod<[], [void], "nonpayable">;
+  getFunction(
+    nameOrSignature: "setResult"
+  ): TypedContractMethod<
+    [
+      _communityId: BigNumberish,
+      _electionId: BytesLike,
+      _result: IElectionResults.ResultStruct
+    ],
+    [void],
+    "nonpayable"
+  >;
   getFunction(
     nameOrSignature: "transferOwnership"
   ): TypedContractMethod<[newOwner: AddressLike], [void], "nonpayable">;
@@ -743,6 +928,13 @@ export interface CommunityHub extends BaseContract {
     OwnershipTransferredEvent.InputTuple,
     OwnershipTransferredEvent.OutputTuple,
     OwnershipTransferredEvent.OutputObject
+  >;
+  getEvent(
+    key: "ResultsSet"
+  ): TypedContractEvent<
+    ResultsSetEvent.InputTuple,
+    ResultsSetEvent.OutputTuple,
+    ResultsSetEvent.OutputObject
   >;
 
   filters: {
@@ -887,6 +1079,17 @@ export interface CommunityHub extends BaseContract {
       OwnershipTransferredEvent.InputTuple,
       OwnershipTransferredEvent.OutputTuple,
       OwnershipTransferredEvent.OutputObject
+    >;
+
+    "ResultsSet(uint256,bytes32)": TypedContractEvent<
+      ResultsSetEvent.InputTuple,
+      ResultsSetEvent.OutputTuple,
+      ResultsSetEvent.OutputObject
+    >;
+    ResultsSet: TypedContractEvent<
+      ResultsSetEvent.InputTuple,
+      ResultsSetEvent.OutputTuple,
+      ResultsSetEvent.OutputObject
     >;
   };
 }

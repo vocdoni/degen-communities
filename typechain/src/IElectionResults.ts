@@ -9,7 +9,6 @@ import type {
   Result,
   Interface,
   EventFragment,
-  AddressLike,
   ContractRunner,
   ContractMethod,
   Listener,
@@ -59,62 +58,22 @@ export declare namespace IElectionResults {
   };
 }
 
-export interface ElectionResultsInterface extends Interface {
-  getFunction(
-    nameOrSignature:
-      | "getResult"
-      | "owner"
-      | "renounceOwnership"
-      | "setResult"
-      | "transferOwnership"
-  ): FunctionFragment;
+export interface IElectionResultsInterface extends Interface {
+  getFunction(nameOrSignature: "getResult" | "setResult"): FunctionFragment;
 
-  getEvent(
-    nameOrSignatureOrTopic: "OwnershipTransferred" | "ResultsSet"
-  ): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "ResultsSet"): EventFragment;
 
   encodeFunctionData(
     functionFragment: "getResult",
     values: [BigNumberish, BytesLike]
   ): string;
-  encodeFunctionData(functionFragment: "owner", values?: undefined): string;
-  encodeFunctionData(
-    functionFragment: "renounceOwnership",
-    values?: undefined
-  ): string;
   encodeFunctionData(
     functionFragment: "setResult",
     values: [BigNumberish, BytesLike, IElectionResults.ResultStruct]
   ): string;
-  encodeFunctionData(
-    functionFragment: "transferOwnership",
-    values: [AddressLike]
-  ): string;
 
   decodeFunctionResult(functionFragment: "getResult", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "owner", data: BytesLike): Result;
-  decodeFunctionResult(
-    functionFragment: "renounceOwnership",
-    data: BytesLike
-  ): Result;
   decodeFunctionResult(functionFragment: "setResult", data: BytesLike): Result;
-  decodeFunctionResult(
-    functionFragment: "transferOwnership",
-    data: BytesLike
-  ): Result;
-}
-
-export namespace OwnershipTransferredEvent {
-  export type InputTuple = [previousOwner: AddressLike, newOwner: AddressLike];
-  export type OutputTuple = [previousOwner: string, newOwner: string];
-  export interface OutputObject {
-    previousOwner: string;
-    newOwner: string;
-  }
-  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
-  export type Filter = TypedDeferredTopicFilter<Event>;
-  export type Log = TypedEventLog<Event>;
-  export type LogDescription = TypedLogDescription<Event>;
 }
 
 export namespace ResultsSetEvent {
@@ -130,11 +89,11 @@ export namespace ResultsSetEvent {
   export type LogDescription = TypedLogDescription<Event>;
 }
 
-export interface ElectionResults extends BaseContract {
-  connect(runner?: ContractRunner | null): ElectionResults;
+export interface IElectionResults extends BaseContract {
+  connect(runner?: ContractRunner | null): IElectionResults;
   waitForDeployment(): Promise<this>;
 
-  interface: ElectionResultsInterface;
+  interface: IElectionResultsInterface;
 
   queryFilter<TCEvent extends TypedContractEvent>(
     event: TCEvent,
@@ -174,27 +133,17 @@ export interface ElectionResults extends BaseContract {
   ): Promise<this>;
 
   getResult: TypedContractMethod<
-    [communityId: BigNumberish, electionId: BytesLike],
+    [_communityId: BigNumberish, _electionId: BytesLike],
     [IElectionResults.ResultStructOutput],
     "view"
   >;
 
-  owner: TypedContractMethod<[], [string], "view">;
-
-  renounceOwnership: TypedContractMethod<[], [void], "nonpayable">;
-
   setResult: TypedContractMethod<
     [
-      communityId: BigNumberish,
-      electionId: BytesLike,
-      result: IElectionResults.ResultStruct
+      _communityId: BigNumberish,
+      _electionId: BytesLike,
+      _result: IElectionResults.ResultStruct
     ],
-    [void],
-    "nonpayable"
-  >;
-
-  transferOwnership: TypedContractMethod<
-    [newOwner: AddressLike],
     [void],
     "nonpayable"
   >;
@@ -206,38 +155,22 @@ export interface ElectionResults extends BaseContract {
   getFunction(
     nameOrSignature: "getResult"
   ): TypedContractMethod<
-    [communityId: BigNumberish, electionId: BytesLike],
+    [_communityId: BigNumberish, _electionId: BytesLike],
     [IElectionResults.ResultStructOutput],
     "view"
   >;
   getFunction(
-    nameOrSignature: "owner"
-  ): TypedContractMethod<[], [string], "view">;
-  getFunction(
-    nameOrSignature: "renounceOwnership"
-  ): TypedContractMethod<[], [void], "nonpayable">;
-  getFunction(
     nameOrSignature: "setResult"
   ): TypedContractMethod<
     [
-      communityId: BigNumberish,
-      electionId: BytesLike,
-      result: IElectionResults.ResultStruct
+      _communityId: BigNumberish,
+      _electionId: BytesLike,
+      _result: IElectionResults.ResultStruct
     ],
     [void],
     "nonpayable"
   >;
-  getFunction(
-    nameOrSignature: "transferOwnership"
-  ): TypedContractMethod<[newOwner: AddressLike], [void], "nonpayable">;
 
-  getEvent(
-    key: "OwnershipTransferred"
-  ): TypedContractEvent<
-    OwnershipTransferredEvent.InputTuple,
-    OwnershipTransferredEvent.OutputTuple,
-    OwnershipTransferredEvent.OutputObject
-  >;
   getEvent(
     key: "ResultsSet"
   ): TypedContractEvent<
@@ -247,17 +180,6 @@ export interface ElectionResults extends BaseContract {
   >;
 
   filters: {
-    "OwnershipTransferred(address,address)": TypedContractEvent<
-      OwnershipTransferredEvent.InputTuple,
-      OwnershipTransferredEvent.OutputTuple,
-      OwnershipTransferredEvent.OutputObject
-    >;
-    OwnershipTransferred: TypedContractEvent<
-      OwnershipTransferredEvent.InputTuple,
-      OwnershipTransferredEvent.OutputTuple,
-      OwnershipTransferredEvent.OutputObject
-    >;
-
     "ResultsSet(uint256,bytes32)": TypedContractEvent<
       ResultsSetEvent.InputTuple,
       ResultsSetEvent.OutputTuple,

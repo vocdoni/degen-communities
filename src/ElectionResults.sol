@@ -2,34 +2,33 @@
 pragma solidity ^0.8.24;
 
 import {Ownable} from "openzeppelin-contracts/contracts/access/Ownable.sol";
+import {IElectionResults} from "./IElectionResults.sol";
 
-contract ElectionResults is Ownable {
+contract ElectionResults is Ownable, IElectionResults {
 
-    constructor(address owner) Ownable(owner) {}
-
-    struct Result {
-        string question;
-        string[] options;
-        string date;
-        uint256[][] tally;
-        uint256 turnout;
-        uint256 totalVotingPower;
-        string[] participants;
-        bytes action;
-        bytes32 censusRoot;
-        string censusURI;
-    }
+    constructor() Ownable(msg.sender) {}
 
     // CommunityId => ElectionId => Result
-    mapping(bytes32 => mapping(bytes32 => Result)) public results;
+    mapping(uint256 => mapping(bytes32 => Result)) private results;
 
     // set results
-    function setResult(bytes32 communityId, bytes32 electionId, Result memory result) public onlyOwner {
-        results[communityId][electionId] = result;
+    function setResult(uint256 communityId, bytes32 electionId, Result memory result) public onlyOwner {
+        Result storage r = results[communityId][electionId];
+        r.question = result.question;
+        r.options = result.options;
+        r.date = result.date;
+        r.tally = result.tally;
+        r.turnout = result.turnout;
+        r.totalVotingPower = result.totalVotingPower;
+        r.participants = result.participants;
+        r.censusRoot = result.censusRoot;
+        r.censusURI = result.censusURI;
+        
+        emit ResultsSet(communityId, electionId);
     }
 
     // get results
-    function getResult(bytes32 communityId, bytes32 electionId) public view returns (Result memory) {
+    function getResult(uint256 communityId, bytes32 electionId) public view returns (Result memory) {
         return results[communityId][electionId];
     }
 }

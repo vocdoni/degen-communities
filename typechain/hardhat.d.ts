@@ -29,6 +29,10 @@ declare module "hardhat/types/runtime" {
       name: "ICommunityHub",
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.ICommunityHub__factory>;
+    getContractFactory(
+      name: "IElectionResults",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.IElectionResults__factory>;
 
     getContractAt(
       name: "Ownable",
@@ -50,6 +54,11 @@ declare module "hardhat/types/runtime" {
       address: string | ethers.Addressable,
       signer?: ethers.Signer
     ): Promise<Contracts.ICommunityHub>;
+    getContractAt(
+      name: "IElectionResults",
+      address: string | ethers.Addressable,
+      signer?: ethers.Signer
+    ): Promise<Contracts.IElectionResults>;
 
     deployContract(
       name: "Ownable",
@@ -67,6 +76,10 @@ declare module "hardhat/types/runtime" {
       name: "ICommunityHub",
       signerOrOptions?: ethers.Signer | DeployContractOptions
     ): Promise<Contracts.ICommunityHub>;
+    deployContract(
+      name: "IElectionResults",
+      signerOrOptions?: ethers.Signer | DeployContractOptions
+    ): Promise<Contracts.IElectionResults>;
 
     deployContract(
       name: "Ownable",
@@ -88,6 +101,11 @@ declare module "hardhat/types/runtime" {
       args: any[],
       signerOrOptions?: ethers.Signer | DeployContractOptions
     ): Promise<Contracts.ICommunityHub>;
+    deployContract(
+      name: "IElectionResults",
+      args: any[],
+      signerOrOptions?: ethers.Signer | DeployContractOptions
+    ): Promise<Contracts.IElectionResults>;
 
     // default types
     getContractFactory(

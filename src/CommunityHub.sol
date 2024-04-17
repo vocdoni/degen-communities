@@ -3,8 +3,9 @@ pragma solidity ^0.8.24;
 
 import {Ownable} from "openzeppelin-contracts/contracts/access/Ownable.sol";
 import {ICommunityHub} from "./ICommunityHub.sol";
+import {IElectionResults} from "./IElectionResults.sol";
 
-contract CommunityHub is Ownable, ICommunityHub {
+contract CommunityHub is Ownable, ICommunityHub, IElectionResults {
 
     constructor() Ownable(msg.sender) {}
 
@@ -12,6 +13,26 @@ contract CommunityHub is Ownable, ICommunityHub {
     uint256 private createCommunityPrice;
     uint256 private nextCommunityId;
     address private defaultElectionResultsContract;
+
+    /// @inheritdoc ICommunityHub
+    function GetCommunity(uint256 _communityId) public view override returns (Community memory) {
+        return communities[_communityId];
+    }
+
+    /// @inheritdoc ICommunityHub
+    function GetCreateCommunityPrice() public view override returns (uint256) {
+        return createCommunityPrice;
+    }
+
+    /// @inheritdoc ICommunityHub
+    function GetDefaultElectionResultsContract() public view override returns (address) {
+        return defaultElectionResultsContract;
+    }
+
+    /// @inheritdoc ICommunityHub
+    function GetNextCommunityId() public view override returns (uint256) {
+        return nextCommunityId;
+    }
 
     /// @inheritdoc ICommunityHub
     function CreateCommunity(
@@ -126,35 +147,17 @@ contract CommunityHub is Ownable, ICommunityHub {
         emit NotifiableElectionsSet(_communityId, _notifiableElections);
     }
 
-    /*
+    /// @inheritdoc IElectionResults
+    function setResult(uint256 _communityId, bytes32 _electionId, Result calldata _result) public override onlyOwner() {
+        IElectionResults electionResults = IElectionResults(communities[_communityId].electionResultsContract);
+        electionResults.setResult(_communityId, _electionId, _result);
+    }
 
-    /// @inheritdoc ICommunityHub
-    function SetElectionResults(
-        uint256 _communityId,
-        bytes32 _electionId,
-        string calldata _question,
-        string[] calldata _options,
-        string calldata _date,
-        uint256[][] calldata _tally,
-        uint256 _turnout,
-        string[] calldata _participants,
-        bytes32 _censusRoot,
-        string calldata _censusURI
-    ) public override {}
-
-    /// @inheritdoc ICommunityHub
-    function GetElectionResults(uint256 _communityId, string calldata _electionId) public view override returns (
-        string memory question,
-        string[] memory options,
-        string memory date,
-        uint256[][] memory tally,
-        uint256 turnout,
-        string[] memory participants,
-        bytes32 censusRoot,
-        string memory censusURI
-    ) {}
-
-    */
+    /// @inheritdoc IElectionResults
+    function getResult(uint256 _communityId, bytes32 _electionId) public view override returns (Result memory) {
+        IElectionResults electionResults = IElectionResults(communities[_communityId].electionResultsContract);
+        return electionResults.getResult(_communityId, _electionId);
+    }
 
     /// @notice Emits the `Deposit` event to track deposits that weren't made via the deposit method.
     /// @dev This call is bound by the gas limitations for `send`/`transfer` calls introduced by [ERC-2929](https://eips.ethereum.org/EIPS/eip-2929).

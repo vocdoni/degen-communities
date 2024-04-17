@@ -4,3 +4,4 @@
 export type { CommunityHub } from "./CommunityHub";
 export type { ElectionResults } from "./ElectionResults";
 export type { ICommunityHub } from "./ICommunityHub";
+export type { IElectionResults } from "./IElectionResults";

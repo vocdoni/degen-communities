@@ -129,6 +129,18 @@ interface ICommunityHub {
         CreateElectionPermission createElectionPermission;
         bool disabled;
     }
+
+    /// @notice Gets the price to create a community.
+    function GetCreateCommunityPrice() external view returns (uint256);
+    
+    /// @notice Gets a community.
+    function GetCommunity(uint256 _communityId) external view returns (Community memory);
+
+    /// @notice Gets the default election results contract.
+    function GetDefaultElectionResultsContract() external view returns (address);
+
+    /// @notice Gets the next community ID.
+    function GetNextCommunityId() external view returns (uint256);
     
     /// @notice Creates a new community.
     /// @param _metadata The metadata of the community.
@@ -203,54 +215,4 @@ interface ICommunityHub {
     /// @param _communityId The ID of the community.
     /// @param _notifiableElections Whether the community has notifiable elections.
     function SetNotifiableElections(uint256 _communityId, bool _notifiableElections) external;
-
-    /*
-
-    /// @notice Sets the election results of a community election.
-    /// @param _communityId The ID of the community.
-    /// @param _electionId The ID of the election.
-    /// @param _question The question of the election.
-    /// @param _options The options of the election question.
-    /// @param _date The date of the election.
-    /// @param _tally The tally of the election.
-    /// @param _turnout The turnout of the election.
-    /// @param _participants The participants of the election.
-    /// @param _censusRoot The root of the census.
-    /// @param _censusURI The URI of the census.
-    function SetElectionResults(
-        uint256 _communityId,
-        bytes32 _electionId,
-        string calldata _question,
-        string[] calldata _options,
-        string calldata _date,
-        uint256[][] calldata _tally,
-        uint256 _turnout,
-        string[] calldata _participants,
-        bytes32 _censusRoot,
-        string calldata _censusURI
-    ) external;
-
-    /// @notice Gets the election results of a community election.
-    /// @param _communityId The ID of the community.
-    /// @param _electionId The ID of the election.
-    /// @return question The question of the election.
-    /// @return options The options of the election question.
-    /// @return date The date of the election.
-    /// @return tally The tally of the election.
-    /// @return turnout The turnout of the election.
-    /// @return participants The participants of the election.
-    /// @return censusRoot The root of the census.
-    /// @return censusURI The URI of the census.
-    function GetElectionResults(uint256 _communityId, string calldata _electionId) external view returns (
-        string memory question,
-        string[] memory options,
-        string memory date,
-        uint256[][] memory tally,
-        uint256 turnout,
-        string[] memory participants,
-        bytes32 censusRoot,
-        string memory censusURI
-    );
-
-    */
 }
