@@ -37,16 +37,23 @@ export declare namespace ICommunityHub {
   export type CensusStruct = {
     censusType: BigNumberish;
     tokens: ICommunityHub.TokenStruct[];
+    channel: string;
   };
 
   export type CensusStructOutput = [
     censusType: bigint,
-    tokens: ICommunityHub.TokenStructOutput[]
-  ] & { censusType: bigint; tokens: ICommunityHub.TokenStructOutput[] };
+    tokens: ICommunityHub.TokenStructOutput[],
+    channel: string
+  ] & {
+    censusType: bigint;
+    tokens: ICommunityHub.TokenStructOutput[];
+    channel: string;
+  };
 
   export type CommunityMetadataStruct = {
     name: string;
     imageURI: string;
+    groupChatURL: string;
     channels: string[];
     notifications: boolean;
   };
@@ -54,11 +61,13 @@ export declare namespace ICommunityHub {
   export type CommunityMetadataStructOutput = [
     name: string,
     imageURI: string,
+    groupChatURL: string,
     channels: string[],
     notifications: boolean
   ] & {
     name: string;
     imageURI: string;
+    groupChatURL: string;
     channels: string[];
     notifications: boolean;
   };
@@ -70,6 +79,7 @@ export declare namespace ICommunityHub {
     electionResultsContract: AddressLike;
     createElectionPermission: BigNumberish;
     disabled: boolean;
+    funds: BigNumberish;
   };
 
   export type CommunityStructOutput = [
@@ -78,7 +88,8 @@ export declare namespace ICommunityHub {
     guardians: bigint[],
     electionResultsContract: string,
     createElectionPermission: bigint,
-    disabled: boolean
+    disabled: boolean,
+    funds: bigint
   ] & {
     metadata: ICommunityHub.CommunityMetadataStructOutput;
     census: ICommunityHub.CensusStructOutput;
@@ -86,6 +97,7 @@ export declare namespace ICommunityHub {
     electionResultsContract: string;
     createElectionPermission: bigint;
     disabled: boolean;
+    funds: bigint;
   };
 }
 
@@ -128,26 +140,30 @@ export declare namespace IElectionResults {
 export interface CommunityHubInterface extends Interface {
   getFunction(
     nameOrSignature:
-      | "AddGuardian"
-      | "AdminManageCommunity"
-      | "AdminSetCommunityPrice"
-      | "AdminSetDefaultElectionResultsContract"
-      | "CreateCommunity"
-      | "GetCommunity"
-      | "GetCreateCommunityPrice"
-      | "GetDefaultElectionResultsContract"
-      | "GetNextCommunityId"
-      | "RemoveGuardian"
-      | "SetCensus"
-      | "SetCreateElectionPermission"
-      | "SetElectionResultsContract"
-      | "SetMetadata"
-      | "SetNotifiableElections"
+      | "addGuardian"
+      | "adminManageCommunity"
+      | "adminSetCommunityPrice"
+      | "adminSetDefaultElectionResultsContract"
+      | "adminSetPricePerElection"
+      | "createCommunity"
+      | "deposit"
+      | "getCommunity"
+      | "getCreateCommunityPrice"
+      | "getDefaultElectionResultsContract"
+      | "getNextCommunityId"
+      | "getPricePerElection"
       | "getResult"
       | "owner"
+      | "removeGuardian"
       | "renounceOwnership"
+      | "setCensus"
+      | "setCreateElectionPermission"
+      | "setElectionResultsContract"
+      | "setMetadata"
+      | "setNotifiableElections"
       | "setResult"
       | "transferOwnership"
+      | "withdraw"
   ): FunctionFragment;
 
   getEvent(
@@ -155,6 +171,7 @@ export interface CommunityHubInterface extends Interface {
       | "AdminCommunityManaged"
       | "CensusSet"
       | "CommunityCreated"
+      | "CommunityDeposit"
       | "CreateCommunityPriceSet"
       | "CreateElectionPermissionSet"
       | "DefaultElectionResultsContractSet"
@@ -165,15 +182,17 @@ export interface CommunityHubInterface extends Interface {
       | "MetadataSet"
       | "NotifiableElectionsSet"
       | "OwnershipTransferred"
+      | "PricePerElectionSet"
       | "ResultsSet"
+      | "Withdrawal"
   ): EventFragment;
 
   encodeFunctionData(
-    functionFragment: "AddGuardian",
+    functionFragment: "addGuardian",
     values: [BigNumberish, BigNumberish]
   ): string;
   encodeFunctionData(
-    functionFragment: "AdminManageCommunity",
+    functionFragment: "adminManageCommunity",
     values: [
       BigNumberish,
       ICommunityHub.CommunityMetadataStruct,
@@ -185,15 +204,19 @@ export interface CommunityHubInterface extends Interface {
     ]
   ): string;
   encodeFunctionData(
-    functionFragment: "AdminSetCommunityPrice",
+    functionFragment: "adminSetCommunityPrice",
     values: [BigNumberish]
   ): string;
   encodeFunctionData(
-    functionFragment: "AdminSetDefaultElectionResultsContract",
+    functionFragment: "adminSetDefaultElectionResultsContract",
     values: [AddressLike]
   ): string;
   encodeFunctionData(
-    functionFragment: "CreateCommunity",
+    functionFragment: "adminSetPricePerElection",
+    values: [BigNumberish]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "createCommunity",
     values: [
       ICommunityHub.CommunityMetadataStruct,
       ICommunityHub.CensusStruct,
@@ -203,44 +226,28 @@ export interface CommunityHubInterface extends Interface {
     ]
   ): string;
   encodeFunctionData(
-    functionFragment: "GetCommunity",
+    functionFragment: "deposit",
     values: [BigNumberish]
   ): string;
   encodeFunctionData(
-    functionFragment: "GetCreateCommunityPrice",
+    functionFragment: "getCommunity",
+    values: [BigNumberish]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "getCreateCommunityPrice",
     values?: undefined
   ): string;
   encodeFunctionData(
-    functionFragment: "GetDefaultElectionResultsContract",
+    functionFragment: "getDefaultElectionResultsContract",
     values?: undefined
   ): string;
   encodeFunctionData(
-    functionFragment: "GetNextCommunityId",
+    functionFragment: "getNextCommunityId",
     values?: undefined
   ): string;
   encodeFunctionData(
-    functionFragment: "RemoveGuardian",
-    values: [BigNumberish, BigNumberish]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "SetCensus",
-    values: [BigNumberish, ICommunityHub.CensusStruct]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "SetCreateElectionPermission",
-    values: [BigNumberish, BigNumberish]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "SetElectionResultsContract",
-    values: [BigNumberish, AddressLike]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "SetMetadata",
-    values: [BigNumberish, ICommunityHub.CommunityMetadataStruct]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "SetNotifiableElections",
-    values: [BigNumberish, boolean]
+    functionFragment: "getPricePerElection",
+    values?: undefined
   ): string;
   encodeFunctionData(
     functionFragment: "getResult",
@@ -248,8 +255,32 @@ export interface CommunityHubInterface extends Interface {
   ): string;
   encodeFunctionData(functionFragment: "owner", values?: undefined): string;
   encodeFunctionData(
+    functionFragment: "removeGuardian",
+    values: [BigNumberish, BigNumberish]
+  ): string;
+  encodeFunctionData(
     functionFragment: "renounceOwnership",
     values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "setCensus",
+    values: [BigNumberish, ICommunityHub.CensusStruct]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "setCreateElectionPermission",
+    values: [BigNumberish, BigNumberish]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "setElectionResultsContract",
+    values: [BigNumberish, AddressLike]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "setMetadata",
+    values: [BigNumberish, ICommunityHub.CommunityMetadataStruct]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "setNotifiableElections",
+    values: [BigNumberish, boolean]
   ): string;
   encodeFunctionData(
     functionFragment: "setResult",
@@ -259,68 +290,78 @@ export interface CommunityHubInterface extends Interface {
     functionFragment: "transferOwnership",
     values: [AddressLike]
   ): string;
+  encodeFunctionData(functionFragment: "withdraw", values?: undefined): string;
 
   decodeFunctionResult(
-    functionFragment: "AddGuardian",
+    functionFragment: "addGuardian",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: "AdminManageCommunity",
+    functionFragment: "adminManageCommunity",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: "AdminSetCommunityPrice",
+    functionFragment: "adminSetCommunityPrice",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: "AdminSetDefaultElectionResultsContract",
+    functionFragment: "adminSetDefaultElectionResultsContract",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: "CreateCommunity",
+    functionFragment: "adminSetPricePerElection",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: "GetCommunity",
+    functionFragment: "createCommunity",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(functionFragment: "deposit", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "getCommunity",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: "GetCreateCommunityPrice",
+    functionFragment: "getCreateCommunityPrice",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: "GetDefaultElectionResultsContract",
+    functionFragment: "getDefaultElectionResultsContract",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: "GetNextCommunityId",
+    functionFragment: "getNextCommunityId",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: "RemoveGuardian",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(functionFragment: "SetCensus", data: BytesLike): Result;
-  decodeFunctionResult(
-    functionFragment: "SetCreateElectionPermission",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "SetElectionResultsContract",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "SetMetadata",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "SetNotifiableElections",
+    functionFragment: "getPricePerElection",
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "getResult", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "owner", data: BytesLike): Result;
   decodeFunctionResult(
+    functionFragment: "removeGuardian",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
     functionFragment: "renounceOwnership",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(functionFragment: "setCensus", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "setCreateElectionPermission",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "setElectionResultsContract",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "setMetadata",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "setNotifiableElections",
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "setResult", data: BytesLike): Result;
@@ -328,6 +369,7 @@ export interface CommunityHubInterface extends Interface {
     functionFragment: "transferOwnership",
     data: BytesLike
   ): Result;
+  decodeFunctionResult(functionFragment: "withdraw", data: BytesLike): Result;
 }
 
 export namespace AdminCommunityManagedEvent {
@@ -367,6 +409,28 @@ export namespace CommunityCreatedEvent {
   export interface OutputObject {
     communityId: bigint;
     creator: string;
+  }
+  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
+  export type Filter = TypedDeferredTopicFilter<Event>;
+  export type Log = TypedEventLog<Event>;
+  export type LogDescription = TypedLogDescription<Event>;
+}
+
+export namespace CommunityDepositEvent {
+  export type InputTuple = [
+    sender: AddressLike,
+    amount: BigNumberish,
+    communityId: BigNumberish
+  ];
+  export type OutputTuple = [
+    sender: string,
+    amount: bigint,
+    communityId: bigint
+  ];
+  export interface OutputObject {
+    sender: string;
+    amount: bigint;
+    communityId: bigint;
   }
   export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
   export type Filter = TypedDeferredTopicFilter<Event>;
@@ -523,12 +587,37 @@ export namespace OwnershipTransferredEvent {
   export type LogDescription = TypedLogDescription<Event>;
 }
 
+export namespace PricePerElectionSetEvent {
+  export type InputTuple = [price: BigNumberish];
+  export type OutputTuple = [price: bigint];
+  export interface OutputObject {
+    price: bigint;
+  }
+  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
+  export type Filter = TypedDeferredTopicFilter<Event>;
+  export type Log = TypedEventLog<Event>;
+  export type LogDescription = TypedLogDescription<Event>;
+}
+
 export namespace ResultsSetEvent {
   export type InputTuple = [communityId: BigNumberish, electionId: BytesLike];
   export type OutputTuple = [communityId: bigint, electionId: string];
   export interface OutputObject {
     communityId: bigint;
     electionId: string;
+  }
+  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
+  export type Filter = TypedDeferredTopicFilter<Event>;
+  export type Log = TypedEventLog<Event>;
+  export type LogDescription = TypedLogDescription<Event>;
+}
+
+export namespace WithdrawalEvent {
+  export type InputTuple = [amount: BigNumberish, to: AddressLike];
+  export type OutputTuple = [amount: bigint, to: string];
+  export interface OutputObject {
+    amount: bigint;
+    to: string;
   }
   export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
   export type Filter = TypedDeferredTopicFilter<Event>;
@@ -579,13 +668,13 @@ export interface CommunityHub extends BaseContract {
     event?: TCEvent
   ): Promise<this>;
 
-  AddGuardian: TypedContractMethod<
+  addGuardian: TypedContractMethod<
     [_communityId: BigNumberish, _guardian: BigNumberish],
     [void],
     "nonpayable"
   >;
 
-  AdminManageCommunity: TypedContractMethod<
+  adminManageCommunity: TypedContractMethod<
     [
       _communityId: BigNumberish,
       _metadata: ICommunityHub.CommunityMetadataStruct,
@@ -599,19 +688,25 @@ export interface CommunityHub extends BaseContract {
     "nonpayable"
   >;
 
-  AdminSetCommunityPrice: TypedContractMethod<
+  adminSetCommunityPrice: TypedContractMethod<
     [_price: BigNumberish],
     [void],
     "nonpayable"
   >;
 
-  AdminSetDefaultElectionResultsContract: TypedContractMethod<
+  adminSetDefaultElectionResultsContract: TypedContractMethod<
     [_electionResultsContract: AddressLike],
     [void],
     "nonpayable"
   >;
 
-  CreateCommunity: TypedContractMethod<
+  adminSetPricePerElection: TypedContractMethod<
+    [_price: BigNumberish],
+    [void],
+    "nonpayable"
+  >;
+
+  createCommunity: TypedContractMethod<
     [
       _metadata: ICommunityHub.CommunityMetadataStruct,
       _census: ICommunityHub.CensusStruct,
@@ -623,56 +718,21 @@ export interface CommunityHub extends BaseContract {
     "payable"
   >;
 
-  GetCommunity: TypedContractMethod<
+  deposit: TypedContractMethod<[_communityId: BigNumberish], [void], "payable">;
+
+  getCommunity: TypedContractMethod<
     [_communityId: BigNumberish],
     [ICommunityHub.CommunityStructOutput],
     "view"
   >;
 
-  GetCreateCommunityPrice: TypedContractMethod<[], [bigint], "view">;
+  getCreateCommunityPrice: TypedContractMethod<[], [bigint], "view">;
 
-  GetDefaultElectionResultsContract: TypedContractMethod<[], [string], "view">;
+  getDefaultElectionResultsContract: TypedContractMethod<[], [string], "view">;
 
-  GetNextCommunityId: TypedContractMethod<[], [bigint], "view">;
+  getNextCommunityId: TypedContractMethod<[], [bigint], "view">;
 
-  RemoveGuardian: TypedContractMethod<
-    [_communityId: BigNumberish, _guardian: BigNumberish],
-    [void],
-    "nonpayable"
-  >;
-
-  SetCensus: TypedContractMethod<
-    [_communityId: BigNumberish, _census: ICommunityHub.CensusStruct],
-    [void],
-    "nonpayable"
-  >;
-
-  SetCreateElectionPermission: TypedContractMethod<
-    [_communityId: BigNumberish, _createElectionPermission: BigNumberish],
-    [void],
-    "nonpayable"
-  >;
-
-  SetElectionResultsContract: TypedContractMethod<
-    [_communityId: BigNumberish, _electionResultsContract: AddressLike],
-    [void],
-    "nonpayable"
-  >;
-
-  SetMetadata: TypedContractMethod<
-    [
-      _communityId: BigNumberish,
-      _metadata: ICommunityHub.CommunityMetadataStruct
-    ],
-    [void],
-    "nonpayable"
-  >;
-
-  SetNotifiableElections: TypedContractMethod<
-    [_communityId: BigNumberish, _notifiableElections: boolean],
-    [void],
-    "nonpayable"
-  >;
+  getPricePerElection: TypedContractMethod<[], [bigint], "view">;
 
   getResult: TypedContractMethod<
     [_communityId: BigNumberish, _electionId: BytesLike],
@@ -682,7 +742,46 @@ export interface CommunityHub extends BaseContract {
 
   owner: TypedContractMethod<[], [string], "view">;
 
+  removeGuardian: TypedContractMethod<
+    [_communityId: BigNumberish, _guardian: BigNumberish],
+    [void],
+    "nonpayable"
+  >;
+
   renounceOwnership: TypedContractMethod<[], [void], "nonpayable">;
+
+  setCensus: TypedContractMethod<
+    [_communityId: BigNumberish, _census: ICommunityHub.CensusStruct],
+    [void],
+    "nonpayable"
+  >;
+
+  setCreateElectionPermission: TypedContractMethod<
+    [_communityId: BigNumberish, _createElectionPermission: BigNumberish],
+    [void],
+    "nonpayable"
+  >;
+
+  setElectionResultsContract: TypedContractMethod<
+    [_communityId: BigNumberish, _electionResultsContract: AddressLike],
+    [void],
+    "nonpayable"
+  >;
+
+  setMetadata: TypedContractMethod<
+    [
+      _communityId: BigNumberish,
+      _metadata: ICommunityHub.CommunityMetadataStruct
+    ],
+    [void],
+    "nonpayable"
+  >;
+
+  setNotifiableElections: TypedContractMethod<
+    [_communityId: BigNumberish, _notifiableElections: boolean],
+    [void],
+    "nonpayable"
+  >;
 
   setResult: TypedContractMethod<
     [
@@ -700,19 +799,21 @@ export interface CommunityHub extends BaseContract {
     "nonpayable"
   >;
 
+  withdraw: TypedContractMethod<[], [void], "nonpayable">;
+
   getFunction<T extends ContractMethod = ContractMethod>(
     key: string | FunctionFragment
   ): T;
 
   getFunction(
-    nameOrSignature: "AddGuardian"
+    nameOrSignature: "addGuardian"
   ): TypedContractMethod<
     [_communityId: BigNumberish, _guardian: BigNumberish],
     [void],
     "nonpayable"
   >;
   getFunction(
-    nameOrSignature: "AdminManageCommunity"
+    nameOrSignature: "adminManageCommunity"
   ): TypedContractMethod<
     [
       _communityId: BigNumberish,
@@ -727,17 +828,20 @@ export interface CommunityHub extends BaseContract {
     "nonpayable"
   >;
   getFunction(
-    nameOrSignature: "AdminSetCommunityPrice"
+    nameOrSignature: "adminSetCommunityPrice"
   ): TypedContractMethod<[_price: BigNumberish], [void], "nonpayable">;
   getFunction(
-    nameOrSignature: "AdminSetDefaultElectionResultsContract"
+    nameOrSignature: "adminSetDefaultElectionResultsContract"
   ): TypedContractMethod<
     [_electionResultsContract: AddressLike],
     [void],
     "nonpayable"
   >;
   getFunction(
-    nameOrSignature: "CreateCommunity"
+    nameOrSignature: "adminSetPricePerElection"
+  ): TypedContractMethod<[_price: BigNumberish], [void], "nonpayable">;
+  getFunction(
+    nameOrSignature: "createCommunity"
   ): TypedContractMethod<
     [
       _metadata: ICommunityHub.CommunityMetadataStruct,
@@ -750,66 +854,27 @@ export interface CommunityHub extends BaseContract {
     "payable"
   >;
   getFunction(
-    nameOrSignature: "GetCommunity"
+    nameOrSignature: "deposit"
+  ): TypedContractMethod<[_communityId: BigNumberish], [void], "payable">;
+  getFunction(
+    nameOrSignature: "getCommunity"
   ): TypedContractMethod<
     [_communityId: BigNumberish],
     [ICommunityHub.CommunityStructOutput],
     "view"
   >;
   getFunction(
-    nameOrSignature: "GetCreateCommunityPrice"
+    nameOrSignature: "getCreateCommunityPrice"
   ): TypedContractMethod<[], [bigint], "view">;
   getFunction(
-    nameOrSignature: "GetDefaultElectionResultsContract"
+    nameOrSignature: "getDefaultElectionResultsContract"
   ): TypedContractMethod<[], [string], "view">;
   getFunction(
-    nameOrSignature: "GetNextCommunityId"
+    nameOrSignature: "getNextCommunityId"
   ): TypedContractMethod<[], [bigint], "view">;
   getFunction(
-    nameOrSignature: "RemoveGuardian"
-  ): TypedContractMethod<
-    [_communityId: BigNumberish, _guardian: BigNumberish],
-    [void],
-    "nonpayable"
-  >;
-  getFunction(
-    nameOrSignature: "SetCensus"
-  ): TypedContractMethod<
-    [_communityId: BigNumberish, _census: ICommunityHub.CensusStruct],
-    [void],
-    "nonpayable"
-  >;
-  getFunction(
-    nameOrSignature: "SetCreateElectionPermission"
-  ): TypedContractMethod<
-    [_communityId: BigNumberish, _createElectionPermission: BigNumberish],
-    [void],
-    "nonpayable"
-  >;
-  getFunction(
-    nameOrSignature: "SetElectionResultsContract"
-  ): TypedContractMethod<
-    [_communityId: BigNumberish, _electionResultsContract: AddressLike],
-    [void],
-    "nonpayable"
-  >;
-  getFunction(
-    nameOrSignature: "SetMetadata"
-  ): TypedContractMethod<
-    [
-      _communityId: BigNumberish,
-      _metadata: ICommunityHub.CommunityMetadataStruct
-    ],
-    [void],
-    "nonpayable"
-  >;
-  getFunction(
-    nameOrSignature: "SetNotifiableElections"
-  ): TypedContractMethod<
-    [_communityId: BigNumberish, _notifiableElections: boolean],
-    [void],
-    "nonpayable"
-  >;
+    nameOrSignature: "getPricePerElection"
+  ): TypedContractMethod<[], [bigint], "view">;
   getFunction(
     nameOrSignature: "getResult"
   ): TypedContractMethod<
@@ -821,8 +886,53 @@ export interface CommunityHub extends BaseContract {
     nameOrSignature: "owner"
   ): TypedContractMethod<[], [string], "view">;
   getFunction(
+    nameOrSignature: "removeGuardian"
+  ): TypedContractMethod<
+    [_communityId: BigNumberish, _guardian: BigNumberish],
+    [void],
+    "nonpayable"
+  >;
+  getFunction(
     nameOrSignature: "renounceOwnership"
   ): TypedContractMethod<[], [void], "nonpayable">;
+  getFunction(
+    nameOrSignature: "setCensus"
+  ): TypedContractMethod<
+    [_communityId: BigNumberish, _census: ICommunityHub.CensusStruct],
+    [void],
+    "nonpayable"
+  >;
+  getFunction(
+    nameOrSignature: "setCreateElectionPermission"
+  ): TypedContractMethod<
+    [_communityId: BigNumberish, _createElectionPermission: BigNumberish],
+    [void],
+    "nonpayable"
+  >;
+  getFunction(
+    nameOrSignature: "setElectionResultsContract"
+  ): TypedContractMethod<
+    [_communityId: BigNumberish, _electionResultsContract: AddressLike],
+    [void],
+    "nonpayable"
+  >;
+  getFunction(
+    nameOrSignature: "setMetadata"
+  ): TypedContractMethod<
+    [
+      _communityId: BigNumberish,
+      _metadata: ICommunityHub.CommunityMetadataStruct
+    ],
+    [void],
+    "nonpayable"
+  >;
+  getFunction(
+    nameOrSignature: "setNotifiableElections"
+  ): TypedContractMethod<
+    [_communityId: BigNumberish, _notifiableElections: boolean],
+    [void],
+    "nonpayable"
+  >;
   getFunction(
     nameOrSignature: "setResult"
   ): TypedContractMethod<
@@ -837,6 +947,9 @@ export interface CommunityHub extends BaseContract {
   getFunction(
     nameOrSignature: "transferOwnership"
   ): TypedContractMethod<[newOwner: AddressLike], [void], "nonpayable">;
+  getFunction(
+    nameOrSignature: "withdraw"
+  ): TypedContractMethod<[], [void], "nonpayable">;
 
   getEvent(
     key: "AdminCommunityManaged"
@@ -858,6 +971,13 @@ export interface CommunityHub extends BaseContract {
     CommunityCreatedEvent.InputTuple,
     CommunityCreatedEvent.OutputTuple,
     CommunityCreatedEvent.OutputObject
+  >;
+  getEvent(
+    key: "CommunityDeposit"
+  ): TypedContractEvent<
+    CommunityDepositEvent.InputTuple,
+    CommunityDepositEvent.OutputTuple,
+    CommunityDepositEvent.OutputObject
   >;
   getEvent(
     key: "CreateCommunityPriceSet"
@@ -930,11 +1050,25 @@ export interface CommunityHub extends BaseContract {
     OwnershipTransferredEvent.OutputObject
   >;
   getEvent(
+    key: "PricePerElectionSet"
+  ): TypedContractEvent<
+    PricePerElectionSetEvent.InputTuple,
+    PricePerElectionSetEvent.OutputTuple,
+    PricePerElectionSetEvent.OutputObject
+  >;
+  getEvent(
     key: "ResultsSet"
   ): TypedContractEvent<
     ResultsSetEvent.InputTuple,
     ResultsSetEvent.OutputTuple,
     ResultsSetEvent.OutputObject
+  >;
+  getEvent(
+    key: "Withdrawal"
+  ): TypedContractEvent<
+    WithdrawalEvent.InputTuple,
+    WithdrawalEvent.OutputTuple,
+    WithdrawalEvent.OutputObject
   >;
 
   filters: {
@@ -969,6 +1103,17 @@ export interface CommunityHub extends BaseContract {
       CommunityCreatedEvent.InputTuple,
       CommunityCreatedEvent.OutputTuple,
       CommunityCreatedEvent.OutputObject
+    >;
+
+    "CommunityDeposit(address,uint256,uint256)": TypedContractEvent<
+      CommunityDepositEvent.InputTuple,
+      CommunityDepositEvent.OutputTuple,
+      CommunityDepositEvent.OutputObject
+    >;
+    CommunityDeposit: TypedContractEvent<
+      CommunityDepositEvent.InputTuple,
+      CommunityDepositEvent.OutputTuple,
+      CommunityDepositEvent.OutputObject
     >;
 
     "CreateCommunityPriceSet(uint256)": TypedContractEvent<
@@ -1081,6 +1226,17 @@ export interface CommunityHub extends BaseContract {
       OwnershipTransferredEvent.OutputObject
     >;
 
+    "PricePerElectionSet(uint256)": TypedContractEvent<
+      PricePerElectionSetEvent.InputTuple,
+      PricePerElectionSetEvent.OutputTuple,
+      PricePerElectionSetEvent.OutputObject
+    >;
+    PricePerElectionSet: TypedContractEvent<
+      PricePerElectionSetEvent.InputTuple,
+      PricePerElectionSetEvent.OutputTuple,
+      PricePerElectionSetEvent.OutputObject
+    >;
+
     "ResultsSet(uint256,bytes32)": TypedContractEvent<
       ResultsSetEvent.InputTuple,
       ResultsSetEvent.OutputTuple,
@@ -1090,6 +1246,17 @@ export interface CommunityHub extends BaseContract {
       ResultsSetEvent.InputTuple,
       ResultsSetEvent.OutputTuple,
       ResultsSetEvent.OutputObject
+    >;
+
+    "Withdrawal(uint256,address)": TypedContractEvent<
+      WithdrawalEvent.InputTuple,
+      WithdrawalEvent.OutputTuple,
+      WithdrawalEvent.OutputObject
+    >;
+    Withdrawal: TypedContractEvent<
+      WithdrawalEvent.InputTuple,
+      WithdrawalEvent.OutputTuple,
+      WithdrawalEvent.OutputObject
     >;
   };
 }

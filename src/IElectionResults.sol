@@ -31,7 +31,7 @@ interface IElectionResults {
     /// @param _communityId The ID of the community.
     /// @param _electionId The ID of the election.
     /// @param _result The results of the election.
-    function setResult(uint256 _communityId, bytes32 _electionId, Result calldata _result) external;
+    function setResult(uint256 _communityId, bytes32 _electionId, Result memory _result) external;
 
     /// @notice Get the results of an election.
     /// @param _communityId The ID of the community.

@@ -2,8 +2,8 @@
   "_format": "hh-sol-cache-2",
   "files": {
     "/home/me/Work/vocdoni/evm_results/src/CommunityHub.sol": {
-      "lastModificationDate": 1713371267712,
-      "contentHash": "1b6e2de6a95ee0d95ffa96159e12ba33",
+      "lastModificationDate": 1713440378994,
+      "contentHash": "7adb18a3f4001e1a26f1af1426a1d2a7",
       "sourceName": "src/CommunityHub.sol",
       "solcConfig": {
         "version": "0.8.24",
@@ -42,8 +42,8 @@
       ]
     },
     "/home/me/Work/vocdoni/evm_results/src/ICommunityHub.sol": {
-      "lastModificationDate": 1713371211086,
-      "contentHash": "4b531e8e772103b2a865db7e32ba0110",
+      "lastModificationDate": 1713439720400,
+      "contentHash": "69ae1ce964a1411f64cc0bbfb624064b",
       "sourceName": "src/ICommunityHub.sol",
       "solcConfig": {
         "version": "0.8.24",
@@ -152,7 +152,7 @@
       ]
     },
     "/home/me/Work/vocdoni/evm_results/src/ElectionResults.sol": {
-      "lastModificationDate": 1713370222906,
+      "lastModificationDate": 1713440391391,
       "contentHash": "7b8548f6ee31f39de9d93a17a86b46d6",
       "sourceName": "src/ElectionResults.sol",
       "solcConfig": {
@@ -191,8 +191,8 @@
       ]
     },
     "/home/me/Work/vocdoni/evm_results/src/IElectionResults.sol": {
-      "lastModificationDate": 1713370476342,
-      "contentHash": "29336e51dfd3292be90a14b1793efbcf",
+      "lastModificationDate": 1713440405261,
+      "contentHash": "b225a2f25636212297391b3fdad1ad0f",
       "sourceName": "src/IElectionResults.sol",
       "solcConfig": {
         "version": "0.8.24",

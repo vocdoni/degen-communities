@@ -32,6 +32,11 @@
     },
     {
       "inputs": [],
+      "name": "InvalidCreateElectionPermission",
+      "type": "error"
+    },
+    {
+      "inputs": [],
       "name": "ZeroAmount",
       "type": "error"
     },
@@ -80,6 +85,11 @@
               "internalType": "struct ICommunityHub.Token[]",
               "name": "tokens",
               "type": "tuple[]"
+            },
+            {
+              "internalType": "string",
+              "name": "channel",
+              "type": "string"
             }
           ],
           "indexed": false,
@@ -108,6 +118,31 @@
         }
       ],
       "name": "CommunityCreated",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": false,
+          "internalType": "address",
+          "name": "sender",
+          "type": "address"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "amount",
+          "type": "uint256"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "communityId",
+          "type": "uint256"
+        }
+      ],
+      "name": "CommunityDeposit",
       "type": "event"
     },
     {
@@ -253,6 +288,11 @@
               "type": "string"
             },
             {
+              "internalType": "string",
+              "name": "groupChatURL",
+              "type": "string"
+            },
+            {
               "internalType": "string[]",
               "name": "channels",
               "type": "string[]"
@@ -292,6 +332,38 @@
       "type": "event"
     },
     {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "price",
+          "type": "uint256"
+        }
+      ],
+      "name": "PricePerElectionSet",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "amount",
+          "type": "uint256"
+        },
+        {
+          "indexed": false,
+          "internalType": "address",
+          "name": "to",
+          "type": "address"
+        }
+      ],
+      "name": "Withdrawal",
+      "type": "event"
+    },
+    {
       "inputs": [
         {
           "internalType": "uint256",
@@ -304,7 +376,7 @@
           "type": "uint256"
         }
       ],
-      "name": "AddGuardian",
+      "name": "addGuardian",
       "outputs": [],
       "stateMutability": "nonpayable",
       "type": "function"
@@ -326,6 +398,11 @@
             {
               "internalType": "string",
               "name": "imageURI",
+              "type": "string"
+            },
+            {
+              "internalType": "string",
+              "name": "groupChatURL",
               "type": "string"
             },
             {
@@ -366,6 +443,11 @@
               "internalType": "struct ICommunityHub.Token[]",
               "name": "tokens",
               "type": "tuple[]"
+            },
+            {
+              "internalType": "string",
+              "name": "channel",
+              "type": "string"
             }
           ],
           "internalType": "struct ICommunityHub.Census",
@@ -393,7 +475,7 @@
           "type": "bool"
         }
       ],
-      "name": "AdminManageCommunity",
+      "name": "adminManageCommunity",
       "outputs": [],
       "stateMutability": "nonpayable",
       "type": "function"
@@ -406,7 +488,7 @@
           "type": "uint256"
         }
       ],
-      "name": "AdminSetCommunityPrice",
+      "name": "adminSetCommunityPrice",
       "outputs": [],
       "stateMutability": "nonpayable",
       "type": "function"
@@ -419,7 +501,20 @@
           "type": "address"
         }
       ],
-      "name": "AdminSetDefaultElectionResultsContract",
+      "name": "adminSetDefaultElectionResultsContract",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "_price",
+          "type": "uint256"
+        }
+      ],
+      "name": "adminSetPricePerElection",
       "outputs": [],
       "stateMutability": "nonpayable",
       "type": "function"
@@ -436,6 +531,11 @@
             {
               "internalType": "string",
               "name": "imageURI",
+              "type": "string"
+            },
+            {
+              "internalType": "string",
+              "name": "groupChatURL",
               "type": "string"
             },
             {
@@ -476,6 +576,11 @@
               "internalType": "struct ICommunityHub.Token[]",
               "name": "tokens",
               "type": "tuple[]"
+            },
+            {
+              "internalType": "string",
+              "name": "channel",
+              "type": "string"
             }
           ],
           "internalType": "struct ICommunityHub.Census",
@@ -498,7 +603,7 @@
           "type": "uint8"
         }
       ],
-      "name": "CreateCommunity",
+      "name": "createCommunity",
       "outputs": [
         {
           "internalType": "uint256",
@@ -517,7 +622,20 @@
           "type": "uint256"
         }
       ],
-      "name": "GetCommunity",
+      "name": "deposit",
+      "outputs": [],
+      "stateMutability": "payable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "_communityId",
+          "type": "uint256"
+        }
+      ],
+      "name": "getCommunity",
       "outputs": [
         {
           "components": [
@@ -531,6 +649,11 @@
                 {
                   "internalType": "string",
                   "name": "imageURI",
+                  "type": "string"
+                },
+                {
+                  "internalType": "string",
+                  "name": "groupChatURL",
                   "type": "string"
                 },
                 {
@@ -571,6 +694,11 @@
                   "internalType": "struct ICommunityHub.Token[]",
                   "name": "tokens",
                   "type": "tuple[]"
+                },
+                {
+                  "internalType": "string",
+                  "name": "channel",
+                  "type": "string"
                 }
               ],
               "internalType": "struct ICommunityHub.Census",
@@ -596,6 +724,11 @@
               "internalType": "bool",
               "name": "disabled",
               "type": "bool"
+            },
+            {
+              "internalType": "uint256",
+              "name": "funds",
+              "type": "uint256"
             }
           ],
           "internalType": "struct ICommunityHub.Community",
@@ -608,7 +741,7 @@
     },
     {
       "inputs": [],
-      "name": "GetCreateCommunityPrice",
+      "name": "getCreateCommunityPrice",
       "outputs": [
         {
           "internalType": "uint256",
@@ -621,7 +754,7 @@
     },
     {
       "inputs": [],
-      "name": "GetDefaultElectionResultsContract",
+      "name": "getDefaultElectionResultsContract",
       "outputs": [
         {
           "internalType": "address",
@@ -634,7 +767,20 @@
     },
     {
       "inputs": [],
-      "name": "GetNextCommunityId",
+      "name": "getNextCommunityId",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "getPricePerElection",
       "outputs": [
         {
           "internalType": "uint256",
@@ -658,7 +804,7 @@
           "type": "uint256"
         }
       ],
-      "name": "RemoveGuardian",
+      "name": "removeGuardian",
       "outputs": [],
       "stateMutability": "nonpayable",
       "type": "function"
@@ -693,6 +839,11 @@
               "internalType": "struct ICommunityHub.Token[]",
               "name": "tokens",
               "type": "tuple[]"
+            },
+            {
+              "internalType": "string",
+              "name": "channel",
+              "type": "string"
             }
           ],
           "internalType": "struct ICommunityHub.Census",
@@ -700,7 +851,7 @@
           "type": "tuple"
         }
       ],
-      "name": "SetCensus",
+      "name": "setCensus",
       "outputs": [],
       "stateMutability": "nonpayable",
       "type": "function"
@@ -718,7 +869,7 @@
           "type": "uint8"
         }
       ],
-      "name": "SetCreateElectionPermission",
+      "name": "setCreateElectionPermission",
       "outputs": [],
       "stateMutability": "nonpayable",
       "type": "function"
@@ -736,7 +887,7 @@
           "type": "address"
         }
       ],
-      "name": "SetElectionResultsContract",
+      "name": "setElectionResultsContract",
       "outputs": [],
       "stateMutability": "nonpayable",
       "type": "function"
@@ -761,6 +912,11 @@
               "type": "string"
             },
             {
+              "internalType": "string",
+              "name": "groupChatURL",
+              "type": "string"
+            },
+            {
               "internalType": "string[]",
               "name": "channels",
               "type": "string[]"
@@ -776,7 +932,7 @@
           "type": "tuple"
         }
       ],
-      "name": "SetMetadata",
+      "name": "setMetadata",
       "outputs": [],
       "stateMutability": "nonpayable",
       "type": "function"
@@ -794,7 +950,14 @@
           "type": "bool"
         }
       ],
-      "name": "SetNotifiableElections",
+      "name": "setNotifiableElections",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "withdraw",
       "outputs": [],
       "stateMutability": "nonpayable",
       "type": "function"

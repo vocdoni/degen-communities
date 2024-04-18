@@ -3,7 +3,7 @@ pragma solidity ^0.8.24;
 
 interface ICommunityHub {
 
-    /// @notice Thrown if the deposit amount is zero.
+    /// @notice Thrown if the amount is zero.
     error ZeroAmount();
 
     /// @notice Thrown if there is a mismatch between the expected and actually deposited amount.
@@ -15,7 +15,16 @@ interface ICommunityHub {
     /// @param guardian The guardian not found.
     error GuardianNotFound(uint256 guardian);
 
+    /// @notice Thrown if the create election permission is invalid.
+    error InvalidCreateElectionPermission();
+
     /// @notice Emitted when a deposit has been made.
+    /// @param sender The address of the sender.
+    /// @param amount The amount deposited.
+    /// @param communityId The ID of the community.
+    event CommunityDeposit(address sender, uint256 amount, uint256 communityId);
+
+    /// @notice Emitted when a deposit has been made but is not tied to a community.
     /// @param sender The address of the sender.
     /// @param amount The amount deposited.
     event Deposit(address sender, uint256 amount);
@@ -28,6 +37,14 @@ interface ICommunityHub {
     /// @notice Emitted when a community price set.
     /// @param price The price to create a community.
     event CreateCommunityPriceSet(uint256 price);
+
+    /// @notice Emmitted when the price per election has been set.
+    /// @param price The price per election.
+    event PricePerElectionSet(uint256 price);
+
+    /// @notice Emitted when contract balance has been withdrawn.
+    /// @param amount The amount withdrawn.
+    event Withdrawal(uint256 amount, address to);
 
     /// @notice Emitted when a community has been managed by the admin.
     /// @param communityId The ID of the community.
@@ -100,16 +117,19 @@ interface ICommunityHub {
     struct Census {
         CensusType censusType; /// The type of the census.
         Token[] tokens;        /// The tokens that will be used to create the census.
+        string channel;        /// The Farcaster channel for the census
     }
 
     /// @notice Represents the metadata of a community.
     /// @param name The name of the community.
     /// @param imageURI The URI of the image representing the community.
+    /// @param groupChatURL The URL of the group chat of the community.
     /// @param channels The channels of the community.
     /// @param notifications Whether the community has notifications enabled.
     struct CommunityMetadata {
         string name;
         string imageURI;
+        string groupChatURL;
         string[] channels;
         bool notifications;
     }
@@ -121,6 +141,7 @@ interface ICommunityHub {
     /// @param electionResultsContract The address of the election results contract.
     /// @param createElectionPermission The permission to create elections.
     /// @param disabled Whether the community is disabled.
+    /// @param funds The funds of the community.
     struct Community {
         CommunityMetadata metadata;
         Census census;
@@ -128,19 +149,23 @@ interface ICommunityHub {
         address electionResultsContract;
         CreateElectionPermission createElectionPermission;
         bool disabled;
+        uint256 funds;
     }
 
     /// @notice Gets the price to create a community.
-    function GetCreateCommunityPrice() external view returns (uint256);
+    function getCreateCommunityPrice() external view returns (uint256);
+
+    /// @notice Gets the price per election.
+    function getPricePerElection() external view returns (uint256);
     
     /// @notice Gets a community.
-    function GetCommunity(uint256 _communityId) external view returns (Community memory);
+    function getCommunity(uint256 _communityId) external view returns (Community memory);
 
     /// @notice Gets the default election results contract.
-    function GetDefaultElectionResultsContract() external view returns (address);
+    function getDefaultElectionResultsContract() external view returns (address);
 
     /// @notice Gets the next community ID.
-    function GetNextCommunityId() external view returns (uint256);
+    function getNextCommunityId() external view returns (uint256);
     
     /// @notice Creates a new community.
     /// @param _metadata The metadata of the community.
@@ -149,7 +174,7 @@ interface ICommunityHub {
     /// @param _electionResultsContract The address of the election results contract.
     /// @param _createElectionPermission The permission to create elections.
     /// @return The ID of the created community.
-    function CreateCommunity(
+    function createCommunity(
         CommunityMetadata calldata _metadata,
         Census calldata _census,
         uint256[] calldata _guardians,
@@ -165,7 +190,7 @@ interface ICommunityHub {
     /// @param _electionResultsContract The address of the election results contract.
     /// @param _createElectionPermission The permission to create elections.
     /// @param _disabled Whether the community is disabled.
-    function AdminManageCommunity(
+    function adminManageCommunity(
         uint256 _communityId,
         CommunityMetadata calldata _metadata,
         Census calldata _census,
@@ -176,43 +201,53 @@ interface ICommunityHub {
     ) external;
 
     /// @notice Sets the price to create a community.
-    function AdminSetCommunityPrice(uint256 _price) external;
+    function adminSetCommunityPrice(uint256 _price) external;
+
+    /// @notice Sets the price per election.
+    function adminSetPricePerElection(uint256 _price) external;
 
     /// @notice Sets the default election results contract.
-    function AdminSetDefaultElectionResultsContract(address _electionResultsContract) external;
+    function adminSetDefaultElectionResultsContract(address _electionResultsContract) external;
 
     /// @notice Sets the metadata of a community.
     /// @param _communityId The ID of the community.
     /// @param _metadata The metadata of the community.
-    function SetMetadata(uint256 _communityId, CommunityMetadata calldata _metadata) external;
+    function setMetadata(uint256 _communityId, CommunityMetadata calldata _metadata) external;
 
     /// @notice Adds a guardian to a community.
     /// @param _communityId The ID of the community.
     /// @param _guardian The guardian to add.
-    function AddGuardian(uint256 _communityId, uint256 _guardian) external;
+    function addGuardian(uint256 _communityId, uint256 _guardian) external;
 
     /// @notice Removes a guardian from a community.
     /// @param _communityId The ID of the community.
     /// @param _guardian The guardian to remove.
-    function RemoveGuardian(uint256 _communityId, uint256 _guardian) external;
+    function removeGuardian(uint256 _communityId, uint256 _guardian) external;
 
     /// @notice Sets a census to a community.
     /// @param _communityId The ID of the community.
     /// @param _census The census to add.
-    function SetCensus(uint256 _communityId, Census calldata _census) external;
+    function setCensus(uint256 _communityId, Census calldata _census) external;
 
     /// @notice Sets the election results contract of a community.
     /// @param _communityId The ID of the community.
     /// @param _electionResultsContract The address of the election results contract.
-    function SetElectionResultsContract(uint256 _communityId, address _electionResultsContract) external;
+    function setElectionResultsContract(uint256 _communityId, address _electionResultsContract) external;
 
     /// @notice Sets the permission to create elections in a community.
     /// @param _communityId The ID of the community.
     /// @param _createElectionPermission The permission to create elections.
-    function SetCreateElectionPermission(uint256 _communityId, CreateElectionPermission _createElectionPermission) external;
+    function setCreateElectionPermission(uint256 _communityId, CreateElectionPermission _createElectionPermission) external;
 
     /// @notice Sets whether a community has notifiable elections.
     /// @param _communityId The ID of the community.
     /// @param _notifiableElections Whether the community has notifiable elections.
-    function SetNotifiableElections(uint256 _communityId, bool _notifiableElections) external;
+    function setNotifiableElections(uint256 _communityId, bool _notifiableElections) external;
+
+    /// @notice Withdraws the contract balance.
+    function withdraw() external;
+
+    /// @notice Deposits tokens to the CommunityHub contract with a reference to a Community.
+    /// @param _communityId The reference describing the deposit reason.
+    function deposit(uint256 _communityId) external payable;
 }

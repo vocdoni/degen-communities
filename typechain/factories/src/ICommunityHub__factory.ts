@@ -38,6 +38,11 @@ const _abi = [
   },
   {
     inputs: [],
+    name: "InvalidCreateElectionPermission",
+    type: "error",
+  },
+  {
+    inputs: [],
     name: "ZeroAmount",
     type: "error",
   },
@@ -87,6 +92,11 @@ const _abi = [
             name: "tokens",
             type: "tuple[]",
           },
+          {
+            internalType: "string",
+            name: "channel",
+            type: "string",
+          },
         ],
         indexed: false,
         internalType: "struct ICommunityHub.Census",
@@ -114,6 +124,31 @@ const _abi = [
       },
     ],
     name: "CommunityCreated",
+    type: "event",
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: false,
+        internalType: "address",
+        name: "sender",
+        type: "address",
+      },
+      {
+        indexed: false,
+        internalType: "uint256",
+        name: "amount",
+        type: "uint256",
+      },
+      {
+        indexed: false,
+        internalType: "uint256",
+        name: "communityId",
+        type: "uint256",
+      },
+    ],
+    name: "CommunityDeposit",
     type: "event",
   },
   {
@@ -259,6 +294,11 @@ const _abi = [
             type: "string",
           },
           {
+            internalType: "string",
+            name: "groupChatURL",
+            type: "string",
+          },
+          {
             internalType: "string[]",
             name: "channels",
             type: "string[]",
@@ -298,6 +338,38 @@ const _abi = [
     type: "event",
   },
   {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: false,
+        internalType: "uint256",
+        name: "price",
+        type: "uint256",
+      },
+    ],
+    name: "PricePerElectionSet",
+    type: "event",
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: false,
+        internalType: "uint256",
+        name: "amount",
+        type: "uint256",
+      },
+      {
+        indexed: false,
+        internalType: "address",
+        name: "to",
+        type: "address",
+      },
+    ],
+    name: "Withdrawal",
+    type: "event",
+  },
+  {
     inputs: [
       {
         internalType: "uint256",
@@ -310,7 +382,7 @@ const _abi = [
         type: "uint256",
       },
     ],
-    name: "AddGuardian",
+    name: "addGuardian",
     outputs: [],
     stateMutability: "nonpayable",
     type: "function",
@@ -332,6 +404,11 @@ const _abi = [
           {
             internalType: "string",
             name: "imageURI",
+            type: "string",
+          },
+          {
+            internalType: "string",
+            name: "groupChatURL",
             type: "string",
           },
           {
@@ -372,6 +449,11 @@ const _abi = [
             internalType: "struct ICommunityHub.Token[]",
             name: "tokens",
             type: "tuple[]",
+          },
+          {
+            internalType: "string",
+            name: "channel",
+            type: "string",
           },
         ],
         internalType: "struct ICommunityHub.Census",
@@ -399,7 +481,7 @@ const _abi = [
         type: "bool",
       },
     ],
-    name: "AdminManageCommunity",
+    name: "adminManageCommunity",
     outputs: [],
     stateMutability: "nonpayable",
     type: "function",
@@ -412,7 +494,7 @@ const _abi = [
         type: "uint256",
       },
     ],
-    name: "AdminSetCommunityPrice",
+    name: "adminSetCommunityPrice",
     outputs: [],
     stateMutability: "nonpayable",
     type: "function",
@@ -425,7 +507,20 @@ const _abi = [
         type: "address",
       },
     ],
-    name: "AdminSetDefaultElectionResultsContract",
+    name: "adminSetDefaultElectionResultsContract",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "uint256",
+        name: "_price",
+        type: "uint256",
+      },
+    ],
+    name: "adminSetPricePerElection",
     outputs: [],
     stateMutability: "nonpayable",
     type: "function",
@@ -442,6 +537,11 @@ const _abi = [
           {
             internalType: "string",
             name: "imageURI",
+            type: "string",
+          },
+          {
+            internalType: "string",
+            name: "groupChatURL",
             type: "string",
           },
           {
@@ -483,6 +583,11 @@ const _abi = [
             name: "tokens",
             type: "tuple[]",
           },
+          {
+            internalType: "string",
+            name: "channel",
+            type: "string",
+          },
         ],
         internalType: "struct ICommunityHub.Census",
         name: "_census",
@@ -504,7 +609,7 @@ const _abi = [
         type: "uint8",
       },
     ],
-    name: "CreateCommunity",
+    name: "createCommunity",
     outputs: [
       {
         internalType: "uint256",
@@ -523,7 +628,20 @@ const _abi = [
         type: "uint256",
       },
     ],
-    name: "GetCommunity",
+    name: "deposit",
+    outputs: [],
+    stateMutability: "payable",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "uint256",
+        name: "_communityId",
+        type: "uint256",
+      },
+    ],
+    name: "getCommunity",
     outputs: [
       {
         components: [
@@ -537,6 +655,11 @@ const _abi = [
               {
                 internalType: "string",
                 name: "imageURI",
+                type: "string",
+              },
+              {
+                internalType: "string",
+                name: "groupChatURL",
                 type: "string",
               },
               {
@@ -578,6 +701,11 @@ const _abi = [
                 name: "tokens",
                 type: "tuple[]",
               },
+              {
+                internalType: "string",
+                name: "channel",
+                type: "string",
+              },
             ],
             internalType: "struct ICommunityHub.Census",
             name: "census",
@@ -603,6 +731,11 @@ const _abi = [
             name: "disabled",
             type: "bool",
           },
+          {
+            internalType: "uint256",
+            name: "funds",
+            type: "uint256",
+          },
         ],
         internalType: "struct ICommunityHub.Community",
         name: "",
@@ -614,7 +747,7 @@ const _abi = [
   },
   {
     inputs: [],
-    name: "GetCreateCommunityPrice",
+    name: "getCreateCommunityPrice",
     outputs: [
       {
         internalType: "uint256",
@@ -627,7 +760,7 @@ const _abi = [
   },
   {
     inputs: [],
-    name: "GetDefaultElectionResultsContract",
+    name: "getDefaultElectionResultsContract",
     outputs: [
       {
         internalType: "address",
@@ -640,7 +773,20 @@ const _abi = [
   },
   {
     inputs: [],
-    name: "GetNextCommunityId",
+    name: "getNextCommunityId",
+    outputs: [
+      {
+        internalType: "uint256",
+        name: "",
+        type: "uint256",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [],
+    name: "getPricePerElection",
     outputs: [
       {
         internalType: "uint256",
@@ -664,7 +810,7 @@ const _abi = [
         type: "uint256",
       },
     ],
-    name: "RemoveGuardian",
+    name: "removeGuardian",
     outputs: [],
     stateMutability: "nonpayable",
     type: "function",
@@ -700,13 +846,18 @@ const _abi = [
             name: "tokens",
             type: "tuple[]",
           },
+          {
+            internalType: "string",
+            name: "channel",
+            type: "string",
+          },
         ],
         internalType: "struct ICommunityHub.Census",
         name: "_census",
         type: "tuple",
       },
     ],
-    name: "SetCensus",
+    name: "setCensus",
     outputs: [],
     stateMutability: "nonpayable",
     type: "function",
@@ -724,7 +875,7 @@ const _abi = [
         type: "uint8",
       },
     ],
-    name: "SetCreateElectionPermission",
+    name: "setCreateElectionPermission",
     outputs: [],
     stateMutability: "nonpayable",
     type: "function",
@@ -742,7 +893,7 @@ const _abi = [
         type: "address",
       },
     ],
-    name: "SetElectionResultsContract",
+    name: "setElectionResultsContract",
     outputs: [],
     stateMutability: "nonpayable",
     type: "function",
@@ -767,6 +918,11 @@ const _abi = [
             type: "string",
           },
           {
+            internalType: "string",
+            name: "groupChatURL",
+            type: "string",
+          },
+          {
             internalType: "string[]",
             name: "channels",
             type: "string[]",
@@ -782,7 +938,7 @@ const _abi = [
         type: "tuple",
       },
     ],
-    name: "SetMetadata",
+    name: "setMetadata",
     outputs: [],
     stateMutability: "nonpayable",
     type: "function",
@@ -800,7 +956,14 @@ const _abi = [
         type: "bool",
       },
     ],
-    name: "SetNotifiableElections",
+    name: "setNotifiableElections",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [],
+    name: "withdraw",
     outputs: [],
     stateMutability: "nonpayable",
     type: "function",
