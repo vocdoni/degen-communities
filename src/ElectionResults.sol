@@ -12,7 +12,7 @@ contract ElectionResults is Ownable, IElectionResults {
     mapping(uint256 => mapping(bytes32 => Result)) private results;
 
     // set results
-    function setResult(uint256 communityId, bytes32 electionId, Result memory result) public onlyOwner {
+    function setResult(uint256 communityId, bytes32 electionId, Result memory result) public override onlyOwner {
         Result storage r = results[communityId][electionId];
         r.question = result.question;
         r.options = result.options;
@@ -28,7 +28,7 @@ contract ElectionResults is Ownable, IElectionResults {
     }
 
     // get results
-    function getResult(uint256 communityId, bytes32 electionId) public view returns (Result memory) {
+    function getResult(uint256 communityId, bytes32 electionId) public view override returns (Result memory) {
         return results[communityId][electionId];
     }
 }

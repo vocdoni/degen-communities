@@ -47,7 +47,7 @@ contract CommunityHub is Ownable, ICommunityHub, IElectionResults {
         uint256[] calldata _guardians,
         address _electionResultsContract,
         CreateElectionPermission _createElectionPermission
-    ) public payable override returns (uint256) {
+    ) external payable override returns (uint256) {
 
         if (_electionResultsContract == address(0)) {
             _electionResultsContract = defaultElectionResultsContract;
@@ -89,7 +89,7 @@ contract CommunityHub is Ownable, ICommunityHub, IElectionResults {
         address _electionResultsContract,
         CreateElectionPermission _createElectionPermission,
         bool _disabled
-    ) public override onlyOwner {
+    ) external override onlyOwner {
         Community storage community = communities[_communityId];
         community.metadata = _metadata;
         community.census = _census;
@@ -104,37 +104,37 @@ contract CommunityHub is Ownable, ICommunityHub, IElectionResults {
     }
 
     /// @inheritdoc ICommunityHub
-    function adminSetCommunityPrice(uint256 _price) public override onlyOwner {
+    function adminSetCommunityPrice(uint256 _price) external override onlyOwner {
         createCommunityPrice = _price;
         emit CreateCommunityPriceSet(_price);
     }
 
     /// @inheritdoc ICommunityHub
-    function adminSetPricePerElection(uint256 _price) public override onlyOwner {
+    function adminSetPricePerElection(uint256 _price) external override onlyOwner {
         pricePerElection = _price;
         emit PricePerElectionSet(_price);
     }
 
     /// @inheritdoc ICommunityHub
-    function adminSetDefaultElectionResultsContract(address _electionResultsContract) public override onlyOwner {
+    function adminSetDefaultElectionResultsContract(address _electionResultsContract) external override onlyOwner {
         defaultElectionResultsContract = _electionResultsContract;
         emit DefaultElectionResultsContractSet(_electionResultsContract);
     }
 
     /// @inheritdoc ICommunityHub
-    function setMetadata(uint256 _communityId, CommunityMetadata calldata _metadata) public override onlyOwner() {
+    function setMetadata(uint256 _communityId, CommunityMetadata calldata _metadata) external override onlyOwner() {
         communities[_communityId].metadata = _metadata;
         emit MetadataSet(_communityId, _metadata);
     }
 
     /// @inheritdoc ICommunityHub
-    function addGuardian(uint256 _communityId, uint256 _guardian) public override onlyOwner() {
+    function addGuardian(uint256 _communityId, uint256 _guardian) external override onlyOwner() {
         communities[_communityId].guardians.push(_guardian);
         emit GuardianAdded(_communityId, _guardian);
     }
 
     /// @inheritdoc ICommunityHub
-    function removeGuardian(uint256 _communityId, uint256 _guardian) public override onlyOwner() {
+    function removeGuardian(uint256 _communityId, uint256 _guardian) external override onlyOwner() {
         uint256[] storage guardians = communities[_communityId].guardians;
         for (uint256 i = 0; i < guardians.length; i++) {
             if (guardians[i] == _guardian) {
@@ -148,31 +148,31 @@ contract CommunityHub is Ownable, ICommunityHub, IElectionResults {
     }
 
     /// @inheritdoc ICommunityHub
-    function setCensus(uint256 _communityId, Census calldata _census) public override onlyOwner() {
+    function setCensus(uint256 _communityId, Census calldata _census) external override onlyOwner() {
         communities[_communityId].census = _census;
         emit CensusSet(_communityId, _census);
     }
 
     /// @inheritdoc ICommunityHub
-    function setElectionResultsContract(uint256 _communityId, address _electionResultsContract) public override onlyOwner() {
+    function setElectionResultsContract(uint256 _communityId, address _electionResultsContract) external override onlyOwner() {
         communities[_communityId].electionResultsContract = _electionResultsContract;
         emit ElectionResultsContractSet(_communityId, _electionResultsContract);
     }
 
     /// @inheritdoc ICommunityHub
-    function setCreateElectionPermission(uint256 _communityId, CreateElectionPermission _createElectionPermission) public override onlyOwner() {
+    function setCreateElectionPermission(uint256 _communityId, CreateElectionPermission _createElectionPermission) external override onlyOwner() {
         communities[_communityId].createElectionPermission = _createElectionPermission;
         emit CreateElectionPermissionSet(_communityId, _createElectionPermission);
     }
 
     /// @inheritdoc ICommunityHub
-    function setNotifiableElections(uint256 _communityId, bool _notifiableElections) public override onlyOwner() {
+    function setNotifiableElections(uint256 _communityId, bool _notifiableElections) external override onlyOwner() {
         communities[_communityId].metadata.notifications = _notifiableElections;
         emit NotifiableElectionsSet(_communityId, _notifiableElections);
     }
 
     /// @inheritdoc IElectionResults
-    function setResult(uint256 _communityId, bytes32 _electionId, Result memory _result) public override onlyOwner() {
+    function setResult(uint256 _communityId, bytes32 _electionId, Result memory _result) external override onlyOwner() {
 
         require(!communities[_communityId].disabled, "Community is disabled");
         require(communities[_communityId].funds >= pricePerElection, "Insufficient funds for this operation");
@@ -194,7 +194,7 @@ contract CommunityHub is Ownable, ICommunityHub, IElectionResults {
     }
 
     /// @inheritdoc ICommunityHub
-    function withdraw() public override onlyOwner {
+    function withdraw() external override onlyOwner {
         uint amount = address(this).balance;
         require(amount > 0, "No funds available");
 
