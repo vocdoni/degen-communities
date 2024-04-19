@@ -172,6 +172,8 @@ export interface CommunityHubInterface extends Interface {
       | "CensusSet"
       | "CommunityCreated"
       | "CommunityDeposit"
+      | "CommunityDisabled"
+      | "CommunityEnabled"
       | "CreateCommunityPriceSet"
       | "CreateElectionPermissionSet"
       | "DefaultElectionResultsContractSet"
@@ -430,6 +432,30 @@ export namespace CommunityDepositEvent {
   export interface OutputObject {
     sender: string;
     amount: bigint;
+    communityId: bigint;
+  }
+  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
+  export type Filter = TypedDeferredTopicFilter<Event>;
+  export type Log = TypedEventLog<Event>;
+  export type LogDescription = TypedLogDescription<Event>;
+}
+
+export namespace CommunityDisabledEvent {
+  export type InputTuple = [communityId: BigNumberish];
+  export type OutputTuple = [communityId: bigint];
+  export interface OutputObject {
+    communityId: bigint;
+  }
+  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
+  export type Filter = TypedDeferredTopicFilter<Event>;
+  export type Log = TypedEventLog<Event>;
+  export type LogDescription = TypedLogDescription<Event>;
+}
+
+export namespace CommunityEnabledEvent {
+  export type InputTuple = [communityId: BigNumberish];
+  export type OutputTuple = [communityId: bigint];
+  export interface OutputObject {
     communityId: bigint;
   }
   export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
@@ -980,6 +1006,20 @@ export interface CommunityHub extends BaseContract {
     CommunityDepositEvent.OutputObject
   >;
   getEvent(
+    key: "CommunityDisabled"
+  ): TypedContractEvent<
+    CommunityDisabledEvent.InputTuple,
+    CommunityDisabledEvent.OutputTuple,
+    CommunityDisabledEvent.OutputObject
+  >;
+  getEvent(
+    key: "CommunityEnabled"
+  ): TypedContractEvent<
+    CommunityEnabledEvent.InputTuple,
+    CommunityEnabledEvent.OutputTuple,
+    CommunityEnabledEvent.OutputObject
+  >;
+  getEvent(
     key: "CreateCommunityPriceSet"
   ): TypedContractEvent<
     CreateCommunityPriceSetEvent.InputTuple,
@@ -1114,6 +1154,28 @@ export interface CommunityHub extends BaseContract {
       CommunityDepositEvent.InputTuple,
       CommunityDepositEvent.OutputTuple,
       CommunityDepositEvent.OutputObject
+    >;
+
+    "CommunityDisabled(uint256)": TypedContractEvent<
+      CommunityDisabledEvent.InputTuple,
+      CommunityDisabledEvent.OutputTuple,
+      CommunityDisabledEvent.OutputObject
+    >;
+    CommunityDisabled: TypedContractEvent<
+      CommunityDisabledEvent.InputTuple,
+      CommunityDisabledEvent.OutputTuple,
+      CommunityDisabledEvent.OutputObject
+    >;
+
+    "CommunityEnabled(uint256)": TypedContractEvent<
+      CommunityEnabledEvent.InputTuple,
+      CommunityEnabledEvent.OutputTuple,
+      CommunityEnabledEvent.OutputObject
+    >;
+    CommunityEnabled: TypedContractEvent<
+      CommunityEnabledEvent.InputTuple,
+      CommunityEnabledEvent.OutputTuple,
+      CommunityEnabledEvent.OutputObject
     >;
 
     "CreateCommunityPriceSet(uint256)": TypedContractEvent<

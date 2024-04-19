@@ -89,6 +89,14 @@ interface ICommunityHub {
     /// @param notifiableElections Whether the community has notifiable elections.
     event NotifiableElectionsSet(uint256 communityId, bool notifiableElections);
 
+    /// @notice Emitted when a community has been disabled.
+    /// @param communityId The ID of the community.
+    event CommunityDisabled(uint256 communityId);
+
+    /// @notice Emitted when a community has been enabled.
+    /// @param communityId The ID of the community.
+    event CommunityEnabled(uint256 communityId);
+
     /// @notice Indicates who can create an election.
     enum CreateElectionPermission {
         GUARDIAN, /// Only guardians can create elections.

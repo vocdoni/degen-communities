@@ -2,8 +2,8 @@
   "_format": "hh-sol-cache-2",
   "files": {
     "/home/me/Work/vocdoni/evm_results/src/CommunityHub.sol": {
-      "lastModificationDate": 1713441246590,
-      "contentHash": "27f32943202f8c9a9043d24d97eb7d93",
+      "lastModificationDate": 1713533582149,
+      "contentHash": "f281473b70027602df22e5645ca7dde4",
       "sourceName": "src/CommunityHub.sol",
       "solcConfig": {
         "version": "0.8.24",
@@ -42,8 +42,8 @@
       ]
     },
     "/home/me/Work/vocdoni/evm_results/src/ICommunityHub.sol": {
-      "lastModificationDate": 1713439720400,
-      "contentHash": "69ae1ce964a1411f64cc0bbfb624064b",
+      "lastModificationDate": 1713533217391,
+      "contentHash": "602b1fa17848ff863526b7b3aef9d09e",
       "sourceName": "src/ICommunityHub.sol",
       "solcConfig": {
         "version": "0.8.24",

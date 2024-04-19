@@ -95,7 +95,13 @@ contract CommunityHub is Ownable, ICommunityHub, IElectionResults {
         community.census = _census;
         community.electionResultsContract = _electionResultsContract;
         community.createElectionPermission = _createElectionPermission;
-        community.disabled = _disabled;
+        if (!community.disabled && _disabled) {
+            community.disabled = true;
+            emit CommunityDisabled(_communityId);
+        } else if (community.disabled && !_disabled) {
+            community.disabled = false;
+            emit CommunityEnabled(_communityId);
+        }
         delete community.guardians;
         for (uint i = 0; i < _guardians.length; ++i) {
             community.guardians.push(_guardians[i]);
@@ -181,6 +187,7 @@ contract CommunityHub is Ownable, ICommunityHub, IElectionResults {
 
         if (communities[_communityId].funds < pricePerElection) {
             communities[_communityId].disabled = true; // Disable community if not enough funds for next election
+            emit CommunityDisabled(_communityId);
         }
 
         IElectionResults electionResults = IElectionResults(communities[_communityId].electionResultsContract);
@@ -217,6 +224,7 @@ contract CommunityHub is Ownable, ICommunityHub, IElectionResults {
         if (communities[_communityId].disabled) {
             if (communities[_communityId].funds >= pricePerElection) {
                 communities[_communityId].disabled = false;
+                emit CommunityEnabled(_communityId);
             }
         }
 
