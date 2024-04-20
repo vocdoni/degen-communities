@@ -191,8 +191,8 @@
       ]
     },
     "/home/me/Work/vocdoni/evm_results/src/IElectionResults.sol": {
-      "lastModificationDate": 1713440405261,
-      "contentHash": "b225a2f25636212297391b3fdad1ad0f",
+      "lastModificationDate": 1713626301132,
+      "contentHash": "cc593be2a1e4696b3eb0e1165a057d88",
       "sourceName": "src/IElectionResults.sol",
       "solcConfig": {
         "version": "0.8.24",
