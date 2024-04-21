@@ -1,3 +1,5 @@
+**DISCLAIMER: THIS IS A POC UNDER DEVELOPMENT, DO NOT USE IT IN PRODUCTION ENVIRONMENTS**
+
 ## Foundry
 
 **Foundry is a blazing fast, portable and modular toolkit for Ethereum application development written in Rust.**
