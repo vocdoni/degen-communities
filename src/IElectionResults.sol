@@ -22,7 +22,7 @@ interface IElectionResults {
         uint256[][] tally;
         uint256 turnout;
         uint256 totalVotingPower;
-        string[] participants;
+        uint256[] participants;
         bytes32 censusRoot;
         string censusURI;
     }

@@ -76,9 +76,9 @@ const _abi = [
             type: "uint256",
           },
           {
-            internalType: "string[]",
+            internalType: "uint256[]",
             name: "participants",
-            type: "string[]",
+            type: "uint256[]",
           },
           {
             internalType: "bytes32",
@@ -144,9 +144,9 @@ const _abi = [
             type: "uint256",
           },
           {
-            internalType: "string[]",
+            internalType: "uint256[]",
             name: "participants",
-            type: "string[]",
+            type: "uint256[]",
           },
           {
             internalType: "bytes32",

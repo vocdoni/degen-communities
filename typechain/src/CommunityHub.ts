@@ -109,7 +109,7 @@ export declare namespace IElectionResults {
     tally: BigNumberish[][];
     turnout: BigNumberish;
     totalVotingPower: BigNumberish;
-    participants: string[];
+    participants: BigNumberish[];
     censusRoot: BytesLike;
     censusURI: string;
   };
@@ -121,7 +121,7 @@ export declare namespace IElectionResults {
     tally: bigint[][],
     turnout: bigint,
     totalVotingPower: bigint,
-    participants: string[],
+    participants: bigint[],
     censusRoot: string,
     censusURI: string
   ] & {
@@ -131,7 +131,7 @@ export declare namespace IElectionResults {
     tally: bigint[][];
     turnout: bigint;
     totalVotingPower: bigint;
-    participants: string[];
+    participants: bigint[];
     censusRoot: string;
     censusURI: string;
   };

@@ -70,9 +70,9 @@
               "type": "uint256"
             },
             {
-              "internalType": "string[]",
+              "internalType": "uint256[]",
               "name": "participants",
-              "type": "string[]"
+              "type": "uint256[]"
             },
             {
               "internalType": "bytes32",
@@ -138,9 +138,9 @@
               "type": "uint256"
             },
             {
-              "internalType": "string[]",
+              "internalType": "uint256[]",
               "name": "participants",
-              "type": "string[]"
+              "type": "uint256[]"
             },
             {
               "internalType": "bytes32",

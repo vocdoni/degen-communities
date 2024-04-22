@@ -225,6 +225,231 @@
       "artifacts": [
         "IElectionResults"
       ]
+    },
+    "/home/me/Work/vocdoni/degen-communities/src/CommunityHub.sol": {
+      "lastModificationDate": 1713732072301,
+      "contentHash": "f281473b70027602df22e5645ca7dde4",
+      "sourceName": "src/CommunityHub.sol",
+      "solcConfig": {
+        "version": "0.8.24",
+        "settings": {
+          "evmVersion": "paris",
+          "optimizer": {
+            "enabled": false,
+            "runs": 200
+          },
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          }
+        }
+      },
+      "imports": [
+        "openzeppelin-contracts/contracts/access/Ownable.sol",
+        "./ICommunityHub.sol",
+        "./IElectionResults.sol"
+      ],
+      "versionPragmas": [
+        "^0.8.24"
+      ],
+      "artifacts": [
+        "CommunityHub"
+      ]
+    },
+    "/home/me/Work/vocdoni/degen-communities/src/IElectionResults.sol": {
+      "lastModificationDate": 1713776581619,
+      "contentHash": "b225a2f25636212297391b3fdad1ad0f",
+      "sourceName": "src/IElectionResults.sol",
+      "solcConfig": {
+        "version": "0.8.24",
+        "settings": {
+          "evmVersion": "paris",
+          "optimizer": {
+            "enabled": false,
+            "runs": 200
+          },
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          }
+        }
+      },
+      "imports": [],
+      "versionPragmas": [
+        "^0.8.24"
+      ],
+      "artifacts": [
+        "IElectionResults"
+      ]
+    },
+    "/home/me/Work/vocdoni/degen-communities/src/ICommunityHub.sol": {
+      "lastModificationDate": 1713775856259,
+      "contentHash": "602b1fa17848ff863526b7b3aef9d09e",
+      "sourceName": "src/ICommunityHub.sol",
+      "solcConfig": {
+        "version": "0.8.24",
+        "settings": {
+          "evmVersion": "paris",
+          "optimizer": {
+            "enabled": false,
+            "runs": 200
+          },
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          }
+        }
+      },
+      "imports": [],
+      "versionPragmas": [
+        "^0.8.24"
+      ],
+      "artifacts": [
+        "ICommunityHub"
+      ]
+    },
+    "/home/me/Work/vocdoni/degen-communities/lib/openzeppelin-contracts/contracts/access/Ownable.sol": {
+      "lastModificationDate": 1713732277388,
+      "contentHash": "d3c790edc9ccf808a17c5a6cd13614fd",
+      "sourceName": "openzeppelin-contracts/contracts/access/Ownable.sol",
+      "solcConfig": {
+        "version": "0.8.24",
+        "settings": {
+          "evmVersion": "paris",
+          "optimizer": {
+            "enabled": false,
+            "runs": 200
+          },
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          }
+        }
+      },
+      "imports": [
+        "../utils/Context.sol"
+      ],
+      "versionPragmas": [
+        "^0.8.20"
+      ],
+      "artifacts": [
+        "Ownable"
+      ]
+    },
+    "/home/me/Work/vocdoni/degen-communities/lib/openzeppelin-contracts/contracts/utils/Context.sol": {
+      "lastModificationDate": 1713732277394,
+      "contentHash": "67bfbc07588eb8683b3fd8f6f909563e",
+      "sourceName": "openzeppelin-contracts/contracts/utils/Context.sol",
+      "solcConfig": {
+        "version": "0.8.24",
+        "settings": {
+          "evmVersion": "paris",
+          "optimizer": {
+            "enabled": false,
+            "runs": 200
+          },
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          }
+        }
+      },
+      "imports": [],
+      "versionPragmas": [
+        "^0.8.20"
+      ],
+      "artifacts": [
+        "Context"
+      ]
+    },
+    "/home/me/Work/vocdoni/degen-communities/src/ElectionResults.sol": {
+      "lastModificationDate": 1713732072301,
+      "contentHash": "d9b41a3091e378e3d3751a2ee611a9ce",
+      "sourceName": "src/ElectionResults.sol",
+      "solcConfig": {
+        "version": "0.8.24",
+        "settings": {
+          "evmVersion": "paris",
+          "optimizer": {
+            "enabled": false,
+            "runs": 200
+          },
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          }
+        }
+      },
+      "imports": [
+        "openzeppelin-contracts/contracts/access/Ownable.sol",
+        "./IElectionResults.sol"
+      ],
+      "versionPragmas": [
+        "^0.8.24"
+      ],
+      "artifacts": [
+        "ElectionResults"
+      ]
     }
   }
 }
