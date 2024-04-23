@@ -48,6 +48,33 @@ contract CommunityHubTest is CommunityHub {
         if (communityHub.getNextCommunityId() != 2) {
             revert("Expected next community id to be 1");
         }
+
+        Community memory community = communityHub.getCommunity(1);
+        
+        if (keccak256(abi.encodePacked(community.metadata.name)) != keccak256(abi.encodePacked("Test Community"))) {
+            revert("Expected community name to be Test Community");
+        }
+        if (keccak256(abi.encodePacked(community.metadata.channels[0])) != keccak256(abi.encodePacked("c1"))) {
+            revert("Expected channel to be c1");
+        }
+        if (keccak256(abi.encodePacked(community.metadata.channels[1])) != keccak256(abi.encodePacked("c2"))) {
+            revert("Expected channel to be c2");
+        }
+        if (community.metadata.notifications != true) {
+            revert("Expected notifications to be true");
+        }
+        if (keccak256(abi.encodePacked(community.census.tokens[0].blockchain)) != keccak256(abi.encodePacked("ethereum"))) {
+            revert("Expected blockchain to be ethereum");
+        }
+        if (keccak256(abi.encodePacked(community.census.tokens[0].contractAddress)) != keccak256(abi.encodePacked(0x2B3006D34359F3C23429167a659b18cC9c6F8bcA))) {
+            revert("Expected contract address to be 0x2B3006D34359F3C23429167a659b18cC9c6F8bcA");
+        }
+        if (keccak256(abi.encodePacked(community.census.channel)) != keccak256(abi.encodePacked("/vote"))) {
+            revert("Expected channel to be /vote");
+        }
+        if (community.census.censusType != CensusType.ERC20) {
+            revert("Expected census type to be ERC20");
+        }
     }
 
     function test_SetResult() public {
