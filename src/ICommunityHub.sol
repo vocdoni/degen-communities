@@ -50,10 +50,6 @@ interface ICommunityHub {
     /// @param communityId The ID of the community.
     event AdminCommunityManaged(uint256 communityId);
 
-    /// @notice Emitted when the default election results contract has been set.
-    /// @param electionResultsContract The address of the election results contract.
-    event DefaultElectionResultsContractSet(address electionResultsContract);
-
     /// @notice Emitted when the metadata of a community has been set.
     /// @param communityId The ID of the community.
     /// @param metadata The metadata of the community.
@@ -73,11 +69,6 @@ interface ICommunityHub {
     /// @param communityId The ID of the community.
     /// @param census The census set.
     event CensusSet(uint256 communityId, Census census);
-
-    /// @notice Emitted when the election results contract of a community has been set.
-    /// @param communityId The ID of the community.
-    /// @param electionResultsContract The address of the election results contract.
-    event ElectionResultsContractSet(uint256 communityId, address electionResultsContract);
 
     /// @notice Emitted when the permission to create elections in a community has been set.
     /// @param communityId The ID of the community.
@@ -122,6 +113,9 @@ interface ICommunityHub {
     }
 
     /// @notice Represents a census.
+    /// @param censusType The type of the census.
+    /// @param tokens The tokens that will be used to create the census.
+    /// @param channel The Farcaster channel for the census.
     struct Census {
         CensusType censusType; /// The type of the census.
         Token[] tokens;        /// The tokens that will be used to create the census.
@@ -146,7 +140,6 @@ interface ICommunityHub {
     /// @param metadata The metadata of the community.
     /// @param census The census of the community.
     /// @param guardians The guardians of the community represented by their respective Farcaster ID.
-    /// @param electionResultsContract The address of the election results contract.
     /// @param createElectionPermission The permission to create elections.
     /// @param disabled Whether the community is disabled.
     /// @param funds The funds of the community.
@@ -154,7 +147,6 @@ interface ICommunityHub {
         CommunityMetadata metadata;
         Census census;
         uint256[] guardians;
-        address electionResultsContract;
         CreateElectionPermission createElectionPermission;
         bool disabled;
         uint256 funds;
@@ -169,9 +161,6 @@ interface ICommunityHub {
     /// @notice Gets a community.
     function getCommunity(uint256 _communityId) external view returns (Community memory);
 
-    /// @notice Gets the default election results contract.
-    function getDefaultElectionResultsContract() external view returns (address);
-
     /// @notice Gets the next community ID.
     function getNextCommunityId() external view returns (uint256);
     
@@ -179,23 +168,19 @@ interface ICommunityHub {
     /// @param _metadata The metadata of the community.
     /// @param _census The census of the community.
     /// @param _guardians The guardians of the community represented by their respective Farcaster ID.
-    /// @param _electionResultsContract The address of the election results contract.
     /// @param _createElectionPermission The permission to create elections.
-    /// @return The ID of the created community.
     function createCommunity(
         CommunityMetadata calldata _metadata,
         Census calldata _census,
         uint256[] calldata _guardians,
-        address _electionResultsContract,
         CreateElectionPermission _createElectionPermission
-    ) external payable returns (uint256);
+    ) external payable;
 
     /// @notice Admin function to manage a community.
     /// @param _communityId The ID of the community to manage.
     /// @param _metadata The metadata of the community.
     /// @param _census The census of the community.
     /// @param _guardians The guardians of the community represented by their respective Farcaster ID.
-    /// @param _electionResultsContract The address of the election results contract.
     /// @param _createElectionPermission The permission to create elections.
     /// @param _disabled Whether the community is disabled.
     function adminManageCommunity(
@@ -203,7 +188,6 @@ interface ICommunityHub {
         CommunityMetadata calldata _metadata,
         Census calldata _census,
         uint256[] calldata _guardians,
-        address _electionResultsContract,
         CreateElectionPermission _createElectionPermission,
         bool _disabled
     ) external;
@@ -213,9 +197,6 @@ interface ICommunityHub {
 
     /// @notice Sets the price per election.
     function adminSetPricePerElection(uint256 _price) external;
-
-    /// @notice Sets the default election results contract.
-    function adminSetDefaultElectionResultsContract(address _electionResultsContract) external;
 
     /// @notice Sets the metadata of a community.
     /// @param _communityId The ID of the community.
@@ -236,11 +217,6 @@ interface ICommunityHub {
     /// @param _communityId The ID of the community.
     /// @param _census The census to add.
     function setCensus(uint256 _communityId, Census calldata _census) external;
-
-    /// @notice Sets the election results contract of a community.
-    /// @param _communityId The ID of the community.
-    /// @param _electionResultsContract The address of the election results contract.
-    function setElectionResultsContract(uint256 _communityId, address _electionResultsContract) external;
 
     /// @notice Sets the permission to create elections in a community.
     /// @param _communityId The ID of the community.

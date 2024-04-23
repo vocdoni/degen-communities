@@ -85,8 +85,8 @@
               "type": "string"
             }
           ],
-          "internalType": "struct IElectionResults.Result",
-          "name": "",
+          "internalType": "struct IResult.Result",
+          "name": "result",
           "type": "tuple"
         }
       ],
@@ -153,7 +153,7 @@
               "type": "string"
             }
           ],
-          "internalType": "struct IElectionResults.Result",
+          "internalType": "struct IResult.Result",
           "name": "_result",
           "type": "tuple"
         }
