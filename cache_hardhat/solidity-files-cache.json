@@ -227,8 +227,8 @@
       ]
     },
     "/home/me/Work/vocdoni/degen-communities/src/CommunityHub.sol": {
-      "lastModificationDate": 1713732072301,
-      "contentHash": "f281473b70027602df22e5645ca7dde4",
+      "lastModificationDate": 1713885704417,
+      "contentHash": "a991b2f7f6e1d654b73ecee52eea9b12",
       "sourceName": "src/CommunityHub.sol",
       "solcConfig": {
         "version": "0.8.24",
@@ -257,6 +257,7 @@
       "imports": [
         "openzeppelin-contracts/contracts/access/Ownable.sol",
         "./ICommunityHub.sol",
+        "./IResult.sol",
         "./IElectionResults.sol"
       ],
       "versionPragmas": [
@@ -267,8 +268,8 @@
       ]
     },
     "/home/me/Work/vocdoni/degen-communities/src/IElectionResults.sol": {
-      "lastModificationDate": 1713776581619,
-      "contentHash": "b225a2f25636212297391b3fdad1ad0f",
+      "lastModificationDate": 1713824277598,
+      "contentHash": "82bc3bf1573f003691f06637462f788a",
       "sourceName": "src/IElectionResults.sol",
       "solcConfig": {
         "version": "0.8.24",
@@ -294,7 +295,9 @@
           }
         }
       },
-      "imports": [],
+      "imports": [
+        "./IResult.sol"
+      ],
       "versionPragmas": [
         "^0.8.24"
       ],
@@ -303,8 +306,8 @@
       ]
     },
     "/home/me/Work/vocdoni/degen-communities/src/ICommunityHub.sol": {
-      "lastModificationDate": 1713775856259,
-      "contentHash": "602b1fa17848ff863526b7b3aef9d09e",
+      "lastModificationDate": 1713885725232,
+      "contentHash": "cf41bcd009a8a0b025ad745e638c3df4",
       "sourceName": "src/ICommunityHub.sol",
       "solcConfig": {
         "version": "0.8.24",
@@ -412,10 +415,10 @@
         "Context"
       ]
     },
-    "/home/me/Work/vocdoni/degen-communities/src/ElectionResults.sol": {
-      "lastModificationDate": 1713732072301,
-      "contentHash": "d9b41a3091e378e3d3751a2ee611a9ce",
-      "sourceName": "src/ElectionResults.sol",
+    "/home/me/Work/vocdoni/degen-communities/src/IResult.sol": {
+      "lastModificationDate": 1713821900414,
+      "contentHash": "aeabd3fcacdf2407a3c08dfdc4776ec5",
+      "sourceName": "src/IResult.sol",
       "solcConfig": {
         "version": "0.8.24",
         "settings": {
@@ -440,15 +443,12 @@
           }
         }
       },
-      "imports": [
-        "openzeppelin-contracts/contracts/access/Ownable.sol",
-        "./IElectionResults.sol"
-      ],
+      "imports": [],
       "versionPragmas": [
         "^0.8.24"
       ],
       "artifacts": [
-        "ElectionResults"
+        "IResult"
       ]
     }
   }
