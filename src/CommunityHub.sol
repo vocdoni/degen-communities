@@ -10,7 +10,9 @@ contract CommunityHub is Ownable, ICommunityHub, IElectionResults {
 
     using IResult for IResult.Result;
 
-    constructor() Ownable(msg.sender) {}
+    constructor() Ownable(msg.sender) {
+        nextCommunityId = 1;
+    }
 
     // CommunityId => Community
     mapping(uint256 => Community) private communities;

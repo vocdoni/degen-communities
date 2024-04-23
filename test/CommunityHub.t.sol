@@ -45,7 +45,7 @@ contract CommunityHubTest is CommunityHub {
         guardians[0] = 10080;
 
         communityHub.createCommunity(metadata, census, guardians, CreateElectionPermission.CENSUS);
-        if (communityHub.getNextCommunityId() != 1) {
+        if (communityHub.getNextCommunityId() != 2) {
             revert("Expected next community id to be 1");
         }
     }
