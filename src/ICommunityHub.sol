@@ -98,7 +98,7 @@ interface ICommunityHub {
     enum CensusType {
         FC,         /// All Farcaster users.
         CHANNEL,    /// Users in a specific channel.
-        FOLLOWERS,  /// Users following a specific account.
+        FOLLOWERS,  /// Users following a specific account. It can be used also for followers out of Farcaster, for example, from AlfaFrens.
         CSV,        /// Users in a CSV file.
         ERC20,      /// Users holding a specific ERC20 token.
         NFT         /// Users holding a specific NFT.
@@ -119,7 +119,7 @@ interface ICommunityHub {
     struct Census {
         CensusType censusType; /// The type of the census.
         Token[] tokens;        /// The tokens that will be used to create the census.
-        string channel;        /// The Farcaster channel for the census
+        string channel;        /// The Farcaster channel for the census. It can be used to store the user Farcaster FID (fid:32512) or the Alfafrens ref (alfafrens:0x123456789) for followers censuses.
     }
 
     /// @notice Represents the metadata of a community.
