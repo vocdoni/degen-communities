@@ -2,6 +2,7 @@
 /* tslint:disable */
 /* eslint-disable */
 export type { CommunityHub } from "./CommunityHub";
+export type { CommunityHubV2 } from "./CommunityHubV2";
 export type { ElectionResults } from "./ElectionResults";
 export type { ICommunityHub } from "./ICommunityHub";
 export type { IElectionResults } from "./IElectionResults";

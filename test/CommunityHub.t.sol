@@ -3,14 +3,22 @@ pragma solidity ^0.8.24;
 
 import {Test, console} from "forge-std/Test.sol";
 import {CommunityHub} from "../src/CommunityHub.sol";
+import {CommunityHubV2} from "../src/CommunityHubV2.sol";
 import {IResult} from "../src/IResult.sol";
+import {Upgrades} from "openzeppelin-foundry-upgrades/Upgrades.sol";
+import {Options} from "openzeppelin-foundry-upgrades/Options.sol";
 
-contract CommunityHubTest is CommunityHub {
-
+contract CommunityHubTest is CommunityHub, Test {
     CommunityHub public communityHub;
+    CommunityHubV2 public communityHubV2;
+    address payable public proxy;
+
+    address pproxy =
+        Upgrades.deployUUPSProxy("CommunityHub.sol", abi.encodeWithSelector(CommunityHub.initialize.selector));
 
     function setUp() public {
-        communityHub = new CommunityHub();
+        proxy = payable(pproxy);
+        communityHub = CommunityHub(proxy);
     }
 
     function test_CreateCommunity() public {
@@ -31,26 +39,19 @@ contract CommunityHubTest is CommunityHub {
             notifications: true
         });
 
-        tokens[0] = Token({
-            blockchain: "ethereum",
-            contractAddress: 0x2B3006D34359F3C23429167a659b18cC9c6F8bcA
-        });
+        tokens[0] = Token({blockchain: "ethereum", contractAddress: 0x2B3006D34359F3C23429167a659b18cC9c6F8bcA});
 
-        census = Census({
-            censusType: CensusType.ERC20,
-            tokens: tokens,
-            channel: "/vote"
-        });
+        census = Census({censusType: CensusType.ERC20, tokens: tokens, channel: "/vote"});
 
         guardians[0] = 10080;
 
         communityHub.createCommunity(metadata, census, guardians, CreateElectionPermission.CENSUS);
-        if (communityHub.getNextCommunityId() != 2) {
+        if (communityHub.getNextCommunityId() != 1) {
             revert("Expected next community id to be 1");
         }
 
-        Community memory community = communityHub.getCommunity(1);
-        
+        Community memory community = communityHub.getCommunity(0);
+
         if (keccak256(abi.encodePacked(community.metadata.name)) != keccak256(abi.encodePacked("Test Community"))) {
             revert("Expected community name to be Test Community");
         }
@@ -63,10 +64,16 @@ contract CommunityHubTest is CommunityHub {
         if (community.metadata.notifications != true) {
             revert("Expected notifications to be true");
         }
-        if (keccak256(abi.encodePacked(community.census.tokens[0].blockchain)) != keccak256(abi.encodePacked("ethereum"))) {
+        if (
+            keccak256(abi.encodePacked(community.census.tokens[0].blockchain))
+                != keccak256(abi.encodePacked("ethereum"))
+        ) {
             revert("Expected blockchain to be ethereum");
         }
-        if (keccak256(abi.encodePacked(community.census.tokens[0].contractAddress)) != keccak256(abi.encodePacked(0x2B3006D34359F3C23429167a659b18cC9c6F8bcA))) {
+        if (
+            keccak256(abi.encodePacked(community.census.tokens[0].contractAddress))
+                != keccak256(abi.encodePacked(0x2B3006D34359F3C23429167a659b18cC9c6F8bcA))
+        ) {
             revert("Expected contract address to be 0x2B3006D34359F3C23429167a659b18cC9c6F8bcA");
         }
         if (keccak256(abi.encodePacked(community.census.channel)) != keccak256(abi.encodePacked("/vote"))) {
@@ -78,13 +85,8 @@ contract CommunityHubTest is CommunityHub {
     }
 
     function test_SetResult() public {
-        string[] memory channels = new string[](2);
-        CommunityMetadata memory metadata;
-        Token[] memory tokens = new Token[](1);
-        Census memory census;
-        uint256[] memory guardians = new uint256[](1);
         string[] memory options = new string[](3);
-        uint256[][] memory tally = new uint256[][](1);    
+        uint256[][] memory tally = new uint256[][](1);
         uint256[] memory participants = new uint256[](5);
         IResult.Result memory result;
 
@@ -93,30 +95,6 @@ contract CommunityHubTest is CommunityHub {
         string memory question = "What is your favorite color?";
         string memory date = "2022-01-01";
         string memory censusURI = "ipfs://";
-
-        channels[0] = "c1";
-        channels[1] = "c2";
-
-        metadata = CommunityMetadata({
-            name: "Test Community",
-            imageURI: "ipfs://",
-            groupChatURL: "t.me/test",
-            channels: channels,
-            notifications: true
-        });
-
-        tokens[0] = Token({
-            blockchain: "ethereum",
-            contractAddress: 0x2B3006D34359F3C23429167a659b18cC9c6F8bcA
-        });
-
-        census = Census({
-            censusType: CensusType.ERC20,
-            tokens: tokens,
-            channel: "/vote"
-        });
-
-        guardians[0] = 10080;
 
         options[0] = "Red";
         options[1] = "Green";
@@ -145,8 +123,6 @@ contract CommunityHubTest is CommunityHub {
             censusURI: censusURI
         });
 
-        communityHub.createCommunity(metadata, census, guardians, CreateElectionPermission.CENSUS);
-
         communityHub.setResult(0, electionId, result);
         IResult.Result memory result2 = communityHub.getResult(0, electionId);
         if (result2.tally[0][0] != 1) {
@@ -170,5 +146,60 @@ contract CommunityHubTest is CommunityHub {
         if (result2.censusRoot != censusRoot) {
             revert("Expected census root to be equal");
         }
+    }
+
+    function test_reinitialize() public {
+        vm.expectRevert(InvalidInitialization.selector);
+        communityHub.initialize();
+    }
+
+    function test_upgrade() public {
+        // create a community in the old implementation
+        test_CreateCommunity();
+
+        console.log("Proxy address:", proxy);
+        console.log("Current implementation address:", Upgrades.getImplementationAddress(proxy));
+
+        Options memory opts;
+        opts.referenceContract = "CommunityHub.sol";
+        Upgrades.upgradeProxy(pproxy, "CommunityHubV2.sol", "", opts);
+
+        console.log("New implementation address:", Upgrades.getImplementationAddress(proxy));
+
+        // check new implementation propagates storage correctly
+        communityHubV2 = CommunityHubV2(proxy);
+
+        // create a community in the new implementation
+        string[] memory channels = new string[](2);
+        CommunityMetadata memory metadata;
+        Token[] memory tokens = new Token[](1);
+        Census memory census;
+        uint256[] memory guardians = new uint256[](1);
+
+        channels[0] = "c1";
+        channels[1] = "c2";
+
+        metadata = CommunityMetadata({
+            name: "Test Community",
+            imageURI: "ipfs://",
+            groupChatURL: "t.me/test",
+            channels: channels,
+            notifications: true
+        });
+
+        tokens[0] = Token({blockchain: "ethereum", contractAddress: 0x2B3006D34359F3C23429167a659b18cC9c6F8bcA});
+
+        census = Census({censusType: CensusType.ERC20, tokens: tokens, channel: "/vote"});
+
+        guardians[0] = 10080;
+
+        communityHubV2.createCommunity(metadata, census, guardians, CreateElectionPermission.CENSUS);
+        if (communityHubV2.getNextCommunityId() != 2) {
+            revert("Expected next community id to be 2");
+        }
+
+        // check not reinitialize v2
+        vm.expectRevert(InvalidInitialization.selector);
+        communityHubV2.initialize();
     }
 }

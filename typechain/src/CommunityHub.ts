@@ -137,6 +137,7 @@ export declare namespace IResult {
 export interface CommunityHubInterface extends Interface {
   getFunction(
     nameOrSignature:
+      | "UPGRADE_INTERFACE_VERSION"
       | "addGuardian"
       | "adminManageCommunity"
       | "adminSetCommunityPrice"
@@ -148,7 +149,9 @@ export interface CommunityHubInterface extends Interface {
       | "getNextCommunityId"
       | "getPricePerElection"
       | "getResult"
+      | "initialize"
       | "owner"
+      | "proxiableUUID"
       | "removeGuardian"
       | "renounceOwnership"
       | "setCensus"
@@ -157,6 +160,7 @@ export interface CommunityHubInterface extends Interface {
       | "setNotifiableElections"
       | "setResult"
       | "transferOwnership"
+      | "upgradeToAndCall"
       | "withdraw"
   ): FunctionFragment;
 
@@ -173,14 +177,20 @@ export interface CommunityHubInterface extends Interface {
       | "Deposit"
       | "GuardianAdded"
       | "GuardianRemoved"
+      | "Initialized"
       | "MetadataSet"
       | "NotifiableElectionsSet"
       | "OwnershipTransferred"
       | "PricePerElectionSet"
       | "ResultsSet"
+      | "Upgraded"
       | "Withdrawal"
   ): EventFragment;
 
+  encodeFunctionData(
+    functionFragment: "UPGRADE_INTERFACE_VERSION",
+    values?: undefined
+  ): string;
   encodeFunctionData(
     functionFragment: "addGuardian",
     values: [BigNumberish, BigNumberish]
@@ -237,7 +247,15 @@ export interface CommunityHubInterface extends Interface {
     functionFragment: "getResult",
     values: [BigNumberish, BytesLike]
   ): string;
+  encodeFunctionData(
+    functionFragment: "initialize",
+    values?: undefined
+  ): string;
   encodeFunctionData(functionFragment: "owner", values?: undefined): string;
+  encodeFunctionData(
+    functionFragment: "proxiableUUID",
+    values?: undefined
+  ): string;
   encodeFunctionData(
     functionFragment: "removeGuardian",
     values: [BigNumberish, BigNumberish]
@@ -270,8 +288,16 @@ export interface CommunityHubInterface extends Interface {
     functionFragment: "transferOwnership",
     values: [AddressLike]
   ): string;
+  encodeFunctionData(
+    functionFragment: "upgradeToAndCall",
+    values: [AddressLike, BytesLike]
+  ): string;
   encodeFunctionData(functionFragment: "withdraw", values?: undefined): string;
 
+  decodeFunctionResult(
+    functionFragment: "UPGRADE_INTERFACE_VERSION",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(
     functionFragment: "addGuardian",
     data: BytesLike
@@ -310,7 +336,12 @@ export interface CommunityHubInterface extends Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "getResult", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "initialize", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "owner", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "proxiableUUID",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(
     functionFragment: "removeGuardian",
     data: BytesLike
@@ -335,6 +366,10 @@ export interface CommunityHubInterface extends Interface {
   decodeFunctionResult(functionFragment: "setResult", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "transferOwnership",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "upgradeToAndCall",
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "withdraw", data: BytesLike): Result;
@@ -500,6 +535,18 @@ export namespace GuardianRemovedEvent {
   export type LogDescription = TypedLogDescription<Event>;
 }
 
+export namespace InitializedEvent {
+  export type InputTuple = [version: BigNumberish];
+  export type OutputTuple = [version: bigint];
+  export interface OutputObject {
+    version: bigint;
+  }
+  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
+  export type Filter = TypedDeferredTopicFilter<Event>;
+  export type Log = TypedEventLog<Event>;
+  export type LogDescription = TypedLogDescription<Event>;
+}
+
 export namespace MetadataSetEvent {
   export type InputTuple = [
     communityId: BigNumberish,
@@ -573,6 +620,18 @@ export namespace ResultsSetEvent {
   export type LogDescription = TypedLogDescription<Event>;
 }
 
+export namespace UpgradedEvent {
+  export type InputTuple = [implementation: AddressLike];
+  export type OutputTuple = [implementation: string];
+  export interface OutputObject {
+    implementation: string;
+  }
+  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
+  export type Filter = TypedDeferredTopicFilter<Event>;
+  export type Log = TypedEventLog<Event>;
+  export type LogDescription = TypedLogDescription<Event>;
+}
+
 export namespace WithdrawalEvent {
   export type InputTuple = [amount: BigNumberish, to: AddressLike];
   export type OutputTuple = [amount: bigint, to: string];
@@ -628,6 +687,8 @@ export interface CommunityHub extends BaseContract {
   removeAllListeners<TCEvent extends TypedContractEvent>(
     event?: TCEvent
   ): Promise<this>;
+
+  UPGRADE_INTERFACE_VERSION: TypedContractMethod<[], [string], "view">;
 
   addGuardian: TypedContractMethod<
     [_communityId: BigNumberish, _guardian: BigNumberish],
@@ -691,7 +752,11 @@ export interface CommunityHub extends BaseContract {
     "view"
   >;
 
+  initialize: TypedContractMethod<[], [void], "nonpayable">;
+
   owner: TypedContractMethod<[], [string], "view">;
+
+  proxiableUUID: TypedContractMethod<[], [string], "view">;
 
   removeGuardian: TypedContractMethod<
     [_communityId: BigNumberish, _guardian: BigNumberish],
@@ -744,12 +809,21 @@ export interface CommunityHub extends BaseContract {
     "nonpayable"
   >;
 
+  upgradeToAndCall: TypedContractMethod<
+    [newImplementation: AddressLike, data: BytesLike],
+    [void],
+    "payable"
+  >;
+
   withdraw: TypedContractMethod<[], [void], "nonpayable">;
 
   getFunction<T extends ContractMethod = ContractMethod>(
     key: string | FunctionFragment
   ): T;
 
+  getFunction(
+    nameOrSignature: "UPGRADE_INTERFACE_VERSION"
+  ): TypedContractMethod<[], [string], "view">;
   getFunction(
     nameOrSignature: "addGuardian"
   ): TypedContractMethod<
@@ -816,7 +890,13 @@ export interface CommunityHub extends BaseContract {
     "view"
   >;
   getFunction(
+    nameOrSignature: "initialize"
+  ): TypedContractMethod<[], [void], "nonpayable">;
+  getFunction(
     nameOrSignature: "owner"
+  ): TypedContractMethod<[], [string], "view">;
+  getFunction(
+    nameOrSignature: "proxiableUUID"
   ): TypedContractMethod<[], [string], "view">;
   getFunction(
     nameOrSignature: "removeGuardian"
@@ -873,6 +953,13 @@ export interface CommunityHub extends BaseContract {
   getFunction(
     nameOrSignature: "transferOwnership"
   ): TypedContractMethod<[newOwner: AddressLike], [void], "nonpayable">;
+  getFunction(
+    nameOrSignature: "upgradeToAndCall"
+  ): TypedContractMethod<
+    [newImplementation: AddressLike, data: BytesLike],
+    [void],
+    "payable"
+  >;
   getFunction(
     nameOrSignature: "withdraw"
   ): TypedContractMethod<[], [void], "nonpayable">;
@@ -955,6 +1042,13 @@ export interface CommunityHub extends BaseContract {
     GuardianRemovedEvent.OutputObject
   >;
   getEvent(
+    key: "Initialized"
+  ): TypedContractEvent<
+    InitializedEvent.InputTuple,
+    InitializedEvent.OutputTuple,
+    InitializedEvent.OutputObject
+  >;
+  getEvent(
     key: "MetadataSet"
   ): TypedContractEvent<
     MetadataSetEvent.InputTuple,
@@ -988,6 +1082,13 @@ export interface CommunityHub extends BaseContract {
     ResultsSetEvent.InputTuple,
     ResultsSetEvent.OutputTuple,
     ResultsSetEvent.OutputObject
+  >;
+  getEvent(
+    key: "Upgraded"
+  ): TypedContractEvent<
+    UpgradedEvent.InputTuple,
+    UpgradedEvent.OutputTuple,
+    UpgradedEvent.OutputObject
   >;
   getEvent(
     key: "Withdrawal"
@@ -1119,6 +1220,17 @@ export interface CommunityHub extends BaseContract {
       GuardianRemovedEvent.OutputObject
     >;
 
+    "Initialized(uint64)": TypedContractEvent<
+      InitializedEvent.InputTuple,
+      InitializedEvent.OutputTuple,
+      InitializedEvent.OutputObject
+    >;
+    Initialized: TypedContractEvent<
+      InitializedEvent.InputTuple,
+      InitializedEvent.OutputTuple,
+      InitializedEvent.OutputObject
+    >;
+
     "MetadataSet(uint256,tuple)": TypedContractEvent<
       MetadataSetEvent.InputTuple,
       MetadataSetEvent.OutputTuple,
@@ -1172,6 +1284,17 @@ export interface CommunityHub extends BaseContract {
       ResultsSetEvent.InputTuple,
       ResultsSetEvent.OutputTuple,
       ResultsSetEvent.OutputObject
+    >;
+
+    "Upgraded(address)": TypedContractEvent<
+      UpgradedEvent.InputTuple,
+      UpgradedEvent.OutputTuple,
+      UpgradedEvent.OutputObject
+    >;
+    Upgraded: TypedContractEvent<
+      UpgradedEvent.InputTuple,
+      UpgradedEvent.OutputTuple,
+      UpgradedEvent.OutputObject
     >;
 
     "Withdrawal(uint256,address)": TypedContractEvent<

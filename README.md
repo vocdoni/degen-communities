@@ -51,7 +51,7 @@ $ anvil
 
 ```shell
 $ source .env
-$ forge script --chain base script/CommunityHub.s.sol:CommunityHubScript --rpc-url $BASE_RPC_URL --broadcast --verify --vvvv
+$ forge script --chain base script/CommunityHub.s.sol:CommunityHubDeployScript --rpc-url $BASE_RPC_URL --broadcast --verify --vvvv
 ```
 
 ### Deploying locally using anvil

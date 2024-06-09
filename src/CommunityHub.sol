@@ -22,7 +22,6 @@ contract CommunityHub is Initializable, OwnableUpgradeable, UUPSUpgradeable, ICo
     function initialize() public initializer {
         __UUPSUpgradeable_init();
         __Ownable_init(msg.sender);
-        nextCommunityId = 1;
     }
 
     /// @inheritdoc ICommunityHub

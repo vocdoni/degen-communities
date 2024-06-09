@@ -2,6 +2,7 @@
 /* tslint:disable */
 /* eslint-disable */
 export { CommunityHub__factory } from "./CommunityHub__factory";
+export { CommunityHubV2__factory } from "./CommunityHubV2__factory";
 export { ElectionResults__factory } from "./ElectionResults__factory";
 export { ICommunityHub__factory } from "./ICommunityHub__factory";
 export { IElectionResults__factory } from "./IElectionResults__factory";
