@@ -51,7 +51,18 @@ $ anvil
 
 ```shell
 $ source .env
-$ forge script --chain base script/CommunityHub.s.sol:CommunityHubDeployScript --rpc-url $BASE_RPC_URL --broadcast --verify --vvvv
+```
+
+- Base sepolia
+
+```shell
+forge script --chain-id 84532 script/Deploy.s.sol:CommunityHubDeployScript --rpc-url $BASE_SEPOLIA_RPC_URL --broadcast --verify --verifier-url $BASESCAN_SEPOLIA_URL --etherscan-api-key ${BASESCAN_SEPOLIA_API_KEY} -- --vvvv
+```
+
+- Base
+
+```shell
+forge script --chain-id 8453 script/Deploy.s.sol:CommunityHubDeployScript --rpc-url $BASE_RPC_URL --broadcast --verify --verifier-url $BASESCAN_URL --etherscan-api-key ${BASESCAN_API_KEY} -- --vvvv
 ```
 
 ### Deploying locally using anvil
@@ -63,7 +74,7 @@ $ anvil
 - Update your .env file with a private key given to you by Anvil.
 
 ```shell
-forge script script/CommunityHub.s.sol:MyScript --fork-url http://localhost:8545 --broadcast
+forge script script/Deploy.s.sol:MyScript --fork-url http://localhost:8545 --broadcast
 ```
 
 ### Cast
