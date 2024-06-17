@@ -1,7 +1,7 @@
 import { ethers, BigNumber } from "hardhat";
 import dotenv from "dotenv";
 
-import { CommunityHub, CommunityHub__factory, ICommunityHub } from "../typechain";
+import { CommunityHub, CommunityHub__factory, ICommunityHub, IElectionResults } from "../typechain";
 
 dotenv.config();
 
@@ -36,9 +36,9 @@ async function main() {
 
     // await listCommunities();
     
-    // await migrateCommunities();
+    // await migrateCommunities(signerAddressBaseSepolia);
 
-    await migrateResults();
+    await migrateResults(signerAddressBaseSepolia);
 }
 
 async function listCommunities() {
@@ -77,16 +77,16 @@ async function listCommunities() {
     }
 }
 
-async function migrateCommunities() {
+async function migrateCommunities(signerAddress: string) {
     let communities: Map<number, ICommunityHub.CommunityStructOutput> = new Map();
     // Get current communities
     const communityCount = await currentCommunityHub.getNextCommunityId();
-    for (let i = 1; i < communityCount; i++) {
+    for (let i = 0; i < communityCount; i++) {
         let community = await currentCommunityHub.getCommunity(i);
         communities.set(i, community);
     }
     // Add communities to new CommunityHub
-    for (let i = 1; i < communityCount; i++) {
+    for (let i = 0; i < communityCount; i++) {
         let community = communities.get(i);
 
         let channelsArray = community?.metadata.channels ? Array.from(community.metadata.channels) : [];
@@ -128,16 +128,20 @@ async function migrateCommunities() {
         console.log(`Funds: `, community?.funds ?? ethers.toBigInt(0));
 
         console.log();
+
+        let nonce = await ethers.provider.getTransactionCount(signerAddress);
         
         await newCommunityHub.createCommunity(
             metadata,
             census,
             guardiansArray,
             createElectionPermission,
+            {nonce: nonce}
         )
 
-        await new Promise(resolve => setTimeout(resolve, 5000));
+        await new Promise(resolve => setTimeout(resolve, 30000));
 
+        nonce = await ethers.provider.getTransactionCount(signerAddress);
         await newCommunityHub.adminManageCommunity(
             ethers.toBigInt(i),
             metadata,
@@ -146,7 +150,10 @@ async function migrateCommunities() {
             createElectionPermission,
             community?.disabled ?? false,
             community?.funds ?? ethers.toBigInt(0),
+            {nonce: nonce}
         )
+
+        await new Promise(resolve => setTimeout(resolve, 30000));
 
         // check if community was created
         let newCommunity = await newCommunityHub.getCommunity(i);        
@@ -155,14 +162,19 @@ async function migrateCommunities() {
         break; // remove for migration of all communities
     }
 
-    await new Promise(resolve => setTimeout(resolve, 5000));
+    await new Promise(resolve => setTimeout(resolve, 30000));
     console.log();
     console.log(`Communities migrated.`);
 }
 
-async function migrateResults() {
+async function migrateResults(signerAddress: string) {
     const communityCount = await currentCommunityHub.getNextCommunityId();
-    for (let i = 1; i < communityCount; i++) {
+    for (let i = 0; i < communityCount; i++) {
+        let community = await currentCommunityHub.getCommunity(i);
+        if (community.disabled) {
+            console.log(`Community ${i} is disabled. Skipping migration of results.`);
+            continue;
+        }
         let electionIds = [];
         try {
             const response = await fetch(`${farcaster_vote_polls_by_community_endpoint}${i}`);
@@ -172,14 +184,66 @@ async function migrateResults() {
             const data = await response.json();
             const polls = data.polls;
 
+            if (!polls) {
+                console.log('No polls for community ', i);
+                continue;
+            }
             for (const poll of polls) {
-                electionIds.push(poll.electionId);
+                electionIds.push(`0x`+poll.electionId);
             }
         } catch (error) {
             console.error(`Error fetching polls for community ${i}:`, error);
         }
-        console.log('Election IDs for community ${i}: ', electionIds);
-        break;
+        console.log('Election IDs for community ', i, ` are: `, electionIds);
+        if (electionIds.length === 0) {
+            continue;
+        }
+        for (let electionId of electionIds) {
+            let electionResults = await currentCommunityHub.getResult(ethers.toBigInt(i), electionId);
+
+            let optionsArray: Array<string> = Array.from(electionResults.options);
+            let tallyArray: Array<Array<BigNumber>> = Array.from(electionResults.tally).map(tally => Array.from(tally));
+            let participantsArray: Array<BigNumber> = Array.from(electionResults.participants);
+
+            let electionResult: IElectionResults.IResult.ResultStruct = {
+                question: electionResults.question,
+                options: optionsArray,
+                date: electionResults.date,
+                tally: tallyArray,
+                turnout: electionResults.turnout,
+                totalVotingPower: electionResults.totalVotingPower,
+                participants: participantsArray,
+                censusRoot: electionResults.censusRoot,
+                censusURI: electionResults.censusURI,
+            }
+
+            // console.log election result
+            console.log(`Migrating results for community `, i, ` election `, electionId);
+            console.log(`########################################`);
+
+            console.log(`Question: `, electionResult.question);
+            console.log(`Options: `, electionResult.options);
+            console.log(`Date: `, electionResult.date);
+            console.log(`Tally: `, electionResult.tally);
+            console.log(`Turnout: `, electionResult.turnout);
+            console.log(`Total Voting Power: `, electionResult.totalVotingPower);
+            console.log(`Participants: `, electionResult.participants);
+            console.log(`Census Root: `, electionResult.censusRoot);
+            console.log(`Census URI: `, electionResult.censusURI);
+
+            let nonce = await ethers.provider.getTransactionCount(signerAddress);
+            let sr = await newCommunityHub.setResult(ethers.toBigInt(i), electionId, electionResult, {nonce: nonce});
+            sr.wait();
+            console.log(`Migrated results for community `, i, ` election `, electionId);
+            
+            await new Promise(resolve => setTimeout(resolve, 30000));
+            
+            break; // remove for migration of all results
+        }
+
+        console.log("All results for community ", i, " migrated.");
+
+        break; // remove for migration of all communities
     }
 }
 
