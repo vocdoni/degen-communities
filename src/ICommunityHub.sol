@@ -2,7 +2,6 @@
 pragma solidity ^0.8.24;
 
 interface ICommunityHub {
-
     /// @notice Thrown if the amount is zero.
     error ZeroAmount();
 
@@ -90,19 +89,27 @@ interface ICommunityHub {
 
     /// @notice Indicates who can create an election.
     enum CreateElectionPermission {
-        GUARDIAN, /// Only guardians can create elections.
-        CENSUS    /// Only the users in the community census can create elections.
+        GUARDIAN,
+        /// Only guardians can create elections.
+        CENSUS
     }
+    /// Only the users in the community census can create elections.
 
     /// @notice Represents a census type.
     enum CensusType {
-        FC,         /// All Farcaster users.
-        CHANNEL,    /// Users in a specific channel.
-        FOLLOWERS,  /// Users following a specific account. It can be used also for followers out of Farcaster, for example, from AlfaFrens.
-        CSV,        /// Users in a CSV file.
-        ERC20,      /// Users holding a specific ERC20 token.
-        NFT         /// Users holding a specific NFT.
+        FC,
+        /// All Farcaster users.
+        CHANNEL,
+        /// Users in a specific channel.
+        FOLLOWERS,
+        /// Users following a specific account. It can be used also for followers out of Farcaster, for example, from AlfaFrens.
+        CSV,
+        /// Users in a CSV file.
+        ERC20,
+        /// Users holding a specific ERC20 token.
+        NFT
     }
+    /// Users holding a specific NFT.
 
     /// @notice Represents a token.
     /// @param blockchain The blockchain where the token is live.
@@ -117,10 +124,13 @@ interface ICommunityHub {
     /// @param tokens The tokens that will be used to create the census.
     /// @param channel The Farcaster channel for the census.
     struct Census {
-        CensusType censusType; /// The type of the census.
-        Token[] tokens;        /// The tokens that will be used to create the census.
-        string channel;        /// The Farcaster channel for the census. It can be used to store the user Farcaster FID (fid:32512) or the Alfafrens ref (alfafrens:0x123456789) for followers censuses.
+        CensusType censusType;
+        /// The type of the census.
+        Token[] tokens;
+        /// The tokens that will be used to create the census.
+        string channel;
     }
+    /// The Farcaster channel for the census. It can be used to store the user Farcaster FID (fid:32512) or the Alfafrens ref (alfafrens:0x123456789) for followers censuses.
 
     /// @notice Represents the metadata of a community.
     /// @param name The name of the community.
@@ -157,13 +167,13 @@ interface ICommunityHub {
 
     /// @notice Gets the price per election.
     function getPricePerElection() external view returns (uint256);
-    
+
     /// @notice Gets a community.
     function getCommunity(uint256 _communityId) external view returns (Community memory);
 
     /// @notice Gets the next community ID.
     function getNextCommunityId() external view returns (uint256);
-    
+
     /// @notice Creates a new community.
     /// @param _metadata The metadata of the community.
     /// @param _census The census of the community.
@@ -189,7 +199,8 @@ interface ICommunityHub {
         Census calldata _census,
         uint256[] calldata _guardians,
         CreateElectionPermission _createElectionPermission,
-        bool _disabled
+        bool _disabled,
+        uint256 _funds
     ) external;
 
     /// @notice Sets the price to create a community.
@@ -221,7 +232,8 @@ interface ICommunityHub {
     /// @notice Sets the permission to create elections in a community.
     /// @param _communityId The ID of the community.
     /// @param _createElectionPermission The permission to create elections.
-    function setCreateElectionPermission(uint256 _communityId, CreateElectionPermission _createElectionPermission) external;
+    function setCreateElectionPermission(uint256 _communityId, CreateElectionPermission _createElectionPermission)
+        external;
 
     /// @notice Sets whether a community has notifiable elections.
     /// @param _communityId The ID of the community.

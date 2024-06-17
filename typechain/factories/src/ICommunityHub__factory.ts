@@ -469,6 +469,11 @@ const _abi = [
         name: "_disabled",
         type: "bool",
       },
+      {
+        internalType: "uint256",
+        name: "_funds",
+        type: "uint256",
+      },
     ],
     name: "adminManageCommunity",
     outputs: [],

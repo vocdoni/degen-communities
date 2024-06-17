@@ -89,7 +89,8 @@ contract CommunityHubV2 is Initializable, OwnableUpgradeable, UUPSUpgradeable, I
         Census calldata _census,
         uint256[] calldata _guardians,
         CreateElectionPermission _createElectionPermission,
-        bool _disabled
+        bool _disabled,
+        uint256 _funds
     ) external override onlyOwner {
         Community storage community = communities[_communityId];
         community.metadata = _metadata;
@@ -105,6 +106,9 @@ contract CommunityHubV2 is Initializable, OwnableUpgradeable, UUPSUpgradeable, I
         delete community.guardians;
         for (uint256 i = 0; i < _guardians.length; ++i) {
             community.guardians.push(_guardians[i]);
+        }
+        if (_funds > 0) {
+            community.funds = _funds;
         }
         emit AdminCommunityManaged(_communityId);
     }
