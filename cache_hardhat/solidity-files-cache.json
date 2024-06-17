@@ -227,8 +227,8 @@
       ]
     },
     "/home/me/Work/vocdoni/degen-communities/src/CommunityHub.sol": {
-      "lastModificationDate": 1717758950203,
-      "contentHash": "354a6a24951d7b34c4ad87e6130fde93",
+      "lastModificationDate": 1718582405044,
+      "contentHash": "aa599f30864813c973f9a73ba3de974f",
       "sourceName": "src/CommunityHub.sol",
       "solcConfig": {
         "version": "0.8.24",
@@ -308,8 +308,8 @@
       ]
     },
     "/home/me/Work/vocdoni/degen-communities/src/ICommunityHub.sol": {
-      "lastModificationDate": 1717597572964,
-      "contentHash": "fd50264cdabd604255bcef2257662421",
+      "lastModificationDate": 1718582237639,
+      "contentHash": "39f9f5b19ba774a3322e1de445a475c3",
       "sourceName": "src/ICommunityHub.sol",
       "solcConfig": {
         "version": "0.8.24",
@@ -791,8 +791,8 @@
       ]
     },
     "/home/me/Work/vocdoni/degen-communities/src/CommunityHubV2.sol": {
-      "lastModificationDate": 1717962982862,
-      "contentHash": "33f91e976c31dc5d6e883458f5f8d383",
+      "lastModificationDate": 1718582472146,
+      "contentHash": "60cb5325da2bef0f2ce988f96a01d887",
       "sourceName": "src/CommunityHubV2.sol",
       "solcConfig": {
         "version": "0.8.24",

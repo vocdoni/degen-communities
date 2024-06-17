@@ -10,52 +10,46 @@ let newCommunityHub: CommunityHub;
 
 let communityHubAddress = process.env.CURRENT_COMMUNITY_HUB_CONTRACT_ADDRESS || "";
 let newCommunityHubAddress = process.env.NEW_COMMUNITY_HUB_CONTRACT_ADDRESS || "";
+let degenRPC = process.env.DEGEN_RPC_URL || "";
+
+let baseSepoliaRPC = process.env.BASE_SEPOLIA_RPC_URL || "";
 
 let signerPrivateKey = process.env.PRIVATE_KEY || "";
 
-let communityProcessIds = [
-    {
-        communityId: 0,
-        processIds: [
-            "0x0",
-            "0x1",
-        ]
-    },
-    {
-        communityId: 1,
-        processIds: [
-            "0x0",
-            "0x1",
-        ]
-    },
-]
+let farcaster_vote_backend = process.env.VOTE_FRAME_BACKEND_URL || "";
+let farcaster_vote_polls_by_community_endpoint = farcaster_vote_backend + "/rankings/pollsByCommunity/";
 
 async function main() {
-    const signer = new ethers.Wallet(signerPrivateKey);
-    const signerAddress = await signer.getAddress();
-    console.log("Using signer with address:", signerAddress);
+    const providerDegen = new ethers.JsonRpcProvider(degenRPC);
+    const signerDegen = new ethers.Wallet(signerPrivateKey, providerDegen);
+    const signerAddressDegen = await signerDegen.getAddress();
+    console.log("Using signer with address for Degen Chain:", signerAddressDegen);
 
-    currentCommunityHub = CommunityHub__factory.connect(communityHubAddress, signer);
-    newCommunityHub = CommunityHub__factory.connect(newCommunityHubAddress, signer);
+    const providerBaseSepolia = new ethers.JsonRpcProvider(baseSepoliaRPC);
+    const signerBaseSepolia = new ethers.Wallet(signerPrivateKey, providerBaseSepolia);
+    const signerAddressBaseSepolia = await signerBaseSepolia.getAddress();
+    console.log("Using signer with address for Base Sepolia:", signerAddressBaseSepolia);
+    console.log();
 
-    await migrateCommunities();
+    currentCommunityHub = CommunityHub__factory.connect(communityHubAddress, signerDegen);
+    newCommunityHub = CommunityHub__factory.connect(newCommunityHubAddress, signerBaseSepolia);
 
-    // for each communityProcessIds migrate results
-    for (let {communityId, processIds} of communityProcessIds) {
-        await migrateResultsForCommunity(communityId, processIds);
-    }
+    // await listCommunities();
+    
+    // await migrateCommunities();
+
+    await migrateResults();
 }
 
-async function migrateCommunities() {
+async function listCommunities() {
     let communities: Map<number, ICommunityHub.CommunityStructOutput> = new Map();
-    // Get current communities
     const communityCount = await currentCommunityHub.getNextCommunityId();
-    for (let i = 0; i < communityCount; i++) {
+    // community 0 reserved
+    for (let i = 1; i < communityCount; i++) {
         let community = await currentCommunityHub.getCommunity(i);
         communities.set(i, community);
     }
-    // Add communities to new CommunityHub
-    for (let i = 0; i < communityCount; i++) {
+    for (let i = 1; i < communityCount; i++) {
         let community = communities.get(i);
 
         let metadata: ICommunityHub.CommunityMetadataStruct = {
@@ -73,25 +67,119 @@ async function migrateCommunities() {
         let guardians: Array<BigNumber> = community?.[2] ?? [];
         let createElectionPermission: BigNumber = community?.[3] ?? 0; 
 
-        await newCommunityHub.createCommunity(
-            metadata,
-            census,
-            guardians,
-            createElectionPermission            
-        )
-
-        // check if community was created
-        let newCommunity = await newCommunityHub.getCommunity(i);
-        if (newCommunity[0][0] !== metadata.name) {
-            console.error(`Failed to create community ${metadata.name}`);
-        }
+        console.log(`Community ${i}:`);
+        console.log(`Metadata: `, metadata);
+        console.log(`Census: `, census);
+        console.log(`Guardians: `, guardians.map(guardian => guardian.toString()));
+        console.log(`Create Election Permission: `, createElectionPermission.toString());
+        console.log(`Disabled: `, community?.disabled ?? false);
+        console.log(`Funds: `, community?.funds ?? ethers.toBigInt(0));
     }
 }
 
-async function migrateResultsForCommunity(communityId: number, processIds: Array<string>) {
-    for (let processId of processIds) {
-        let result = await currentCommunityHub.getResult(communityId, processId);
-        await newCommunityHub.setResult(communityId, processId, result);
+async function migrateCommunities() {
+    let communities: Map<number, ICommunityHub.CommunityStructOutput> = new Map();
+    // Get current communities
+    const communityCount = await currentCommunityHub.getNextCommunityId();
+    for (let i = 1; i < communityCount; i++) {
+        let community = await currentCommunityHub.getCommunity(i);
+        communities.set(i, community);
+    }
+    // Add communities to new CommunityHub
+    for (let i = 1; i < communityCount; i++) {
+        let community = communities.get(i);
+
+        let channelsArray = community?.metadata.channels ? Array.from(community.metadata.channels) : [];
+        let metadata: ICommunityHub.CommunityMetadataStruct = {
+            name: community?.metadata.name ?? '',
+            imageURI: community?.metadata.imageURI ?? '',
+            groupChatURL: community?.metadata.groupChatURL ?? '',
+            channels: channelsArray,
+            notifications: community?.metadata.notifications ?? false,
+        }
+
+        
+        let tokensArray: ICommunityHub.TokenStruct[] = [];
+        // for each token in coomunity.census.tokens add it to tokensArray
+        for (let token of community?.census.tokens ?? []) {
+            let tokenStruct: ICommunityHub.TokenStruct = {
+                blockchain: token.blockchain,
+                contractAddress: token.contractAddress,
+            }
+            tokensArray.push(tokenStruct);
+        }
+        let census: ICommunityHub.CensusStruct = {
+            censusType: community?.census.censusType ?? 0,
+            tokens: tokensArray,
+            channel: community?.census.channel ?? '',
+        }
+
+        let guardiansArray = community?.guardians ? Array.from(community.guardians) : [];
+        let createElectionPermission = community?.createElectionPermission ? community.createElectionPermission : ethers.toBigInt(0);
+
+        console.log(`Migrating community ${i}:`);
+        console.log(`########################################`);
+
+        console.log(`Metadata: `, metadata);
+        console.log(`Census: `, census);
+        console.log(`Guardians: `, guardiansArray.map(guardian => guardian.toString()));
+        console.log(`Create Election Permission: `, createElectionPermission.toString());
+        console.log(`Disabled: `, community?.disabled ?? false);
+        console.log(`Funds: `, community?.funds ?? ethers.toBigInt(0));
+
+        console.log();
+        
+        await newCommunityHub.createCommunity(
+            metadata,
+            census,
+            guardiansArray,
+            createElectionPermission,
+        )
+
+        await new Promise(resolve => setTimeout(resolve, 5000));
+
+        await newCommunityHub.adminManageCommunity(
+            ethers.toBigInt(i),
+            metadata,
+            census,
+            guardiansArray,
+            createElectionPermission,
+            community?.disabled ?? false,
+            community?.funds ?? ethers.toBigInt(0),
+        )
+
+        // check if community was created
+        let newCommunity = await newCommunityHub.getCommunity(i);        
+        console.log(`Migrated community: `, newCommunity.metadata.name);
+
+        break; // remove for migration of all communities
+    }
+
+    await new Promise(resolve => setTimeout(resolve, 5000));
+    console.log();
+    console.log(`Communities migrated.`);
+}
+
+async function migrateResults() {
+    const communityCount = await currentCommunityHub.getNextCommunityId();
+    for (let i = 1; i < communityCount; i++) {
+        let electionIds = [];
+        try {
+            const response = await fetch(`${farcaster_vote_polls_by_community_endpoint}${i}`);
+            if (!response.ok) {
+                throw new Error(`Failed to fetch polls for community ${i}`);
+            }
+            const data = await response.json();
+            const polls = data.polls;
+
+            for (const poll of polls) {
+                electionIds.push(poll.electionId);
+            }
+        } catch (error) {
+            console.error(`Error fetching polls for community ${i}:`, error);
+        }
+        console.log('Election IDs for community ${i}: ', electionIds);
+        break;
     }
 }
 

@@ -203,7 +203,8 @@ export interface CommunityHubInterface extends Interface {
       ICommunityHub.CensusStruct,
       BigNumberish[],
       BigNumberish,
-      boolean
+      boolean,
+      BigNumberish
     ]
   ): string;
   encodeFunctionData(
@@ -703,7 +704,8 @@ export interface CommunityHub extends BaseContract {
       _census: ICommunityHub.CensusStruct,
       _guardians: BigNumberish[],
       _createElectionPermission: BigNumberish,
-      _disabled: boolean
+      _disabled: boolean,
+      _funds: BigNumberish
     ],
     [void],
     "nonpayable"
@@ -840,7 +842,8 @@ export interface CommunityHub extends BaseContract {
       _census: ICommunityHub.CensusStruct,
       _guardians: BigNumberish[],
       _createElectionPermission: BigNumberish,
-      _disabled: boolean
+      _disabled: boolean,
+      _funds: BigNumberish
     ],
     [void],
     "nonpayable"
