@@ -6,6 +6,8 @@ ffi = true
 ast = true
 build_info = true
 extra_output = ["storageLayout"]
+optimizer = true
+optimizer_runs = 20_000
 
 [rpc_endpoints]
 sepolia = "${SEPOLIA_RPC_URL}"
