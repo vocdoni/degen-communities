@@ -34,17 +34,19 @@ async function main() {
     currentCommunityHub = CommunityHub__factory.connect(communityHubAddress, signerDegen);
     newCommunityHub = CommunityHub__factory.connect(newCommunityHubAddress, signerBase);
     
+    // UNCOMMENT FOR MIGRATION
+
     // migrate community
-    await migrateCommunity(signerAddressBase, 0);
+    // await migrateCommunity(signerAddressBase, 0);
     
     // finalize migration with admin tx
-    // await adminMigratedCommunityFinalize(signerAddressBase, 4);
+    // await adminMigratedCommunityFinalize(signerAddressBase, 0);
     
     // get election ids for community
-    // await getElectionIds(4);
+    // await getElectionIds(0);
     
     // migrate results for election
-    // await migrateResults(signerAddressBase, 4, "0x4ae20a8eb4caa52f5588f7bb9f3c6d6b7cf003a5b03f4589edea100000000257");
+    // await migrateResults(signerAddressBase, 0, "0x1");
 }
 
 async function migrateCommunity(signerAddress: string, communityId: number) {
@@ -59,7 +61,6 @@ async function migrateCommunity(signerAddress: string, communityId: number) {
         notifications: community?.metadata.notifications ?? false,
     }
 
-    
     let tokensArray: ICommunityHub.TokenStruct[] = [];
     // for each token in coomunity.census.tokens add it to tokensArray
     for (let token of community?.census.tokens ?? []) {
