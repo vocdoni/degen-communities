@@ -56,7 +56,7 @@ $ source .env
 - Base sepolia
 
 ```shell
-forge script --chain-id 84532 script/Deploy.s.sol:CommunityHubDeployScript --rpc-url ${BASE_SEPOLIA_RPC_URL} --broadcast --verify --verifier-url ${BASESCAN_SEPOLIA_URL} --etherscan-api-key ${BASESCAN_SEPOLIA_API_KEY} -- --vvvv
+forge script --chain-id 84532 script/Deploy.s.sol:CommunityHubDeployScript --rpc-url ${BASE_SEPOLIA_RPC_URL} --broadcast --slow --verify --verifier-url ${BASESCAN_SEPOLIA_URL} --etherscan-api-key ${BASESCAN_SEPOLIA_API_KEY} --optimize --optimizer-runs 20000 -- --vvvv
 ```
 
 - Base
