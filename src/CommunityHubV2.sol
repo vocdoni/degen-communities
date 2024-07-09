@@ -25,6 +25,7 @@ contract CommunityHubV2 is Initializable, OwnableUpgradeable, UUPSUpgradeable, I
     function initialize() public initializer {
         __UUPSUpgradeable_init();
         __Ownable_init(msg.sender);
+        nextCommunityId = 1;
     }
 
     /// @inheritdoc ICommunityHub

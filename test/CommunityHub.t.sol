@@ -46,11 +46,11 @@ contract CommunityHubTest is CommunityHub, Test {
         guardians[0] = 10080;
 
         communityHub.createCommunity(metadata, census, guardians, CreateElectionPermission.CENSUS);
-        if (communityHub.getNextCommunityId() != 1) {
-            revert("Expected next community id to be 1");
+        if (communityHub.getNextCommunityId() != 2) {
+            revert("Expected next community id to be 2");
         }
 
-        Community memory community = communityHub.getCommunity(0);
+        Community memory community = communityHub.getCommunity(1);
 
         if (keccak256(abi.encodePacked(community.metadata.name)) != keccak256(abi.encodePacked("Test Community"))) {
             revert("Expected community name to be Test Community");
@@ -123,8 +123,8 @@ contract CommunityHubTest is CommunityHub, Test {
             censusURI: censusURI
         });
 
-        communityHub.setResult(0, electionId, result);
-        IResult.Result memory result2 = communityHub.getResult(0, electionId);
+        communityHub.setResult(1, electionId, result);
+        IResult.Result memory result2 = communityHub.getResult(1, electionId);
         if (result2.tally[0][0] != 1) {
             revert("Expected tally to be 1");
         }
@@ -194,8 +194,8 @@ contract CommunityHubTest is CommunityHub, Test {
         guardians[0] = 10080;
 
         communityHubV2.createCommunity(metadata, census, guardians, CreateElectionPermission.CENSUS);
-        if (communityHubV2.getNextCommunityId() != 2) {
-            revert("Expected next community id to be 2");
+        if (communityHubV2.getNextCommunityId() != 3) {
+            revert("Expected next community id to be 3");
         }
 
         // check not reinitialize v2
